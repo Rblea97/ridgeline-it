@@ -1,0 +1,19 @@
+# Logs
+*.log
+logs/
+
+# Secrets / credentials
+*.key
+*.pem
+secrets.ps1
+*-creds.txt
+
+# VM snapshots / exports
+*.ova
+*.vmdk
+*.vhd
+
+# OS junk
+Thumbs.db
+.DS_Store
+desktop.ini
