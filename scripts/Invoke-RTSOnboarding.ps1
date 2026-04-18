@@ -40,7 +40,7 @@ param (
     [Parameter(Mandatory)] [string]$JobTitle,
 
     [Parameter()]
-    [SecureString]$DefaultPassword = (ConvertTo-SecureString "Welcome1!" -AsPlainText -Force)
+    [SecureString]$DefaultPassword = (ConvertTo-SecureString "Welcome1!2" -AsPlainText -Force)
 )
 
 $TenantDomain    = "fx934y.onmicrosoft.com"
@@ -117,4 +117,4 @@ catch {
 
 Write-Host "`n=== Onboarding Complete ===" -ForegroundColor Cyan
 Write-Host "Next step  : Assign M365 E5 license in admin.microsoft.com -> Users -> $FirstName $LastName"
-Write-Host "Temp pass  : [as provided — user must change at first login]`n"
+Write-Host "Temp pass  : [as provided - user must change at first login]`n"

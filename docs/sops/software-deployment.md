@@ -151,6 +151,7 @@ Or check in Intune: **Apps → All apps → [App name] → Device install status
 | App | Version | Installer | Detection |
 |-----|---------|-----------|-----------|
 | 7-Zip | 24.09 | `7z2409-x64.msi` | `C:\Program Files\7-Zip\7z.exe` exists |
+| Notepad++ | 8.7.4 | `npp.8.7.4.Installer.x64.exe` | `C:\Program Files\Notepad++\notepad++.exe` exists |
 
 ---
 

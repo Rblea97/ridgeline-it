@@ -31,7 +31,7 @@ param (
     [string]$CsvPath,
 
     [Parameter()]
-    [SecureString]$DefaultPassword = (ConvertTo-SecureString "Welcome1!" -AsPlainText -Force)
+    [SecureString]$DefaultPassword = (ConvertTo-SecureString "Welcome1!2" -AsPlainText -Force)
 )
 
 $TenantDomain    = "fx934y.onmicrosoft.com"
