@@ -20,8 +20,8 @@ After enrolling WRK01 and WRK02 in Microsoft Intune, both devices immediately ap
 
 | Device | Hostname | User | Compliance Status |
 |--------|----------|------|-------------------|
-| WRK01 | DESKTOP-4PL0V3F | atorres@fx934y.onmicrosoft.com | Noncompliant |
-| WRK02 | DESKTOP-BTK0BJ4 | jreyes@fx934y.onmicrosoft.com | Noncompliant |
+| WRK01 | DESKTOP-4PL0V3F | atorres@<TENANT>.onmicrosoft.com | Noncompliant |
+| WRK02 | DESKTOP-BTK0BJ4 | jreyes@<TENANT>.onmicrosoft.com | Noncompliant |
 
 ---
 

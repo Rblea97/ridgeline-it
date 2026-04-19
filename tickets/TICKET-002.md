@@ -36,7 +36,7 @@ Steps taken:
 
 ## Outcome
 
-All 6 RTS users synced to Azure AD with UPN `@fx934y.onmicrosoft.com`. Azure AD Connect runs a scheduled delta sync every 30 minutes on DC01.
+All 6 RTS users synced to Azure AD with UPN `@<TENANT>.onmicrosoft.com`. Azure AD Connect runs a scheduled delta sync every 30 minutes on DC01.
 
 ## Lesson Learned
 

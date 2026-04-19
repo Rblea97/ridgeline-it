@@ -22,7 +22,7 @@ User Alex Torres reported that a file saved to their OneDrive for Business folde
 |-------|-------|
 | Affected User | atorres (Alex Torres) |
 | Device | WRK01 (DESKTOP-4PL0V3F) |
-| Service | OneDrive for Business (fx934y.onmicrosoft.com) |
+| Service | OneDrive for Business (<TENANT>.onmicrosoft.com) |
 | Problematic File | `Budget<Final>.xlsx` |
 
 ---

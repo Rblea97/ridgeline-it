@@ -34,7 +34,7 @@ The Operations team requested Notepad++ be deployed to all RTS workstations for 
 ```powershell
 Invoke-WebRequest `
     -Uri 'https://github.com/notepad-plus-plus/notepad-plus-plus/releases/download/v8.7.4/npp.8.7.4.Installer.x64.exe' `
-    -OutFile 'C:\Users\Richie\Projects\IT\intune-staging\notepadpp\npp.8.7.4.Installer.x64.exe'
+    -OutFile '<STAGING-PATH>\notepadpp\npp.8.7.4.Installer.x64.exe'
 ```
 
 ### Step 2 — Package with Win32 Content Prep Tool

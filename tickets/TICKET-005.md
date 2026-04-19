@@ -22,7 +22,7 @@ New employee Jamie Chen joined the Finance department as a Financial Analyst. An
 |-------|-------|
 | New User | Jamie Chen |
 | Username | jchen |
-| UPN | jchen@fx934y.onmicrosoft.com |
+| UPN | jchen@<TENANT>.onmicrosoft.com |
 | Department | Finance |
 | Job Title | Financial Analyst |
 | OU | OU=Finance,OU=RTS Users,DC=ridgeline,DC=local |
@@ -40,7 +40,7 @@ New employee Jamie Chen joined the Finance department as a Financial Analyst. An
 **Script output:**
 - AD account `jchen` created in `OU=Finance,OU=RTS Users,DC=ridgeline,DC=local`
 - Added to security groups: **All Staff**, **Finance Users**
-- UPN set to `jchen@fx934y.onmicrosoft.com`
+- UPN set to `jchen@<TENANT>.onmicrosoft.com`
 - Temporary password: `Welcome1!2` (user must change at first logon)
 - Azure AD Connect delta sync triggered (Result: Success)
 
@@ -54,7 +54,7 @@ Temporary credentials communicated to user via secure channel:
 
 | Field | Value |
 |-------|-------|
-| Username | jchen@fx934y.onmicrosoft.com |
+| Username | jchen@<TENANT>.onmicrosoft.com |
 | Temp Password | Welcome1!2 |
 | First Login | User will be prompted to set a new password |
 
