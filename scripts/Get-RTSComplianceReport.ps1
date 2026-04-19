@@ -29,8 +29,8 @@
 
 [CmdletBinding()]
 param(
-    [string]$TenantId  = 'a9566324-fd0d-49ef-aa14-7ec036854bca',
-    [string]$ClientId  = '14d82eec-204b-4c2f-b7e8-296a70dab67e', # Microsoft Graph PowerShell app
+    [string]$TenantId  = '<TENANT-ID>',
+    [string]$ClientId  = '<CLIENT-ID>',
     [string]$OutputPath = [Environment]::GetFolderPath('MyDocuments')
 )
 

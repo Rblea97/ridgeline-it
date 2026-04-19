@@ -43,7 +43,7 @@ param (
     [SecureString]$DefaultPassword = (ConvertTo-SecureString "Welcome1!2" -AsPlainText -Force)
 )
 
-$TenantDomain    = "fx934y.onmicrosoft.com"
+$TenantDomain    = "<TENANT>.onmicrosoft.com"
 
 $OUMap = @{
     "Operations" = "OU=Operations,OU=RTS Users,DC=ridgeline,DC=local"
