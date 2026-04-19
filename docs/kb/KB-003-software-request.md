@@ -12,7 +12,7 @@ Software for RTS workstations is deployed centrally through Microsoft Intune. Th
 
 ## Tools Required
 
-- **IntuneWinAppUtil.exe** — located at `C:\Users\Richie\Projects\IT\intune-staging\IntuneWinAppUtil.exe`
+- **IntuneWinAppUtil.exe** — located at `<STAGING-PATH>\IntuneWinAppUtil.exe`
 - **Intune Admin Center** — intune.microsoft.com
 
 ## Procedure
@@ -22,7 +22,7 @@ Software for RTS workstations is deployed centrally through Microsoft Intune. Th
 Save the installer (.exe or .msi) to a dedicated staging folder:
 
 ```
-C:\Users\Richie\Projects\IT\intune-staging\<appname>\<installer>
+<STAGING-PATH>\<appname>\<installer>
 ```
 
 ### Step 2 — Package with Win32 Content Prep Tool

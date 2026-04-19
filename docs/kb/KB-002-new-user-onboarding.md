@@ -13,7 +13,7 @@ This article describes the complete process for onboarding a new RTS employee: c
 ## Prerequisites
 
 - Access to DC01 as a domain administrator
-- Access to admin.microsoft.com as admin@fx934y.onmicrosoft.com
+- Access to admin.microsoft.com as admin@<TENANT>.onmicrosoft.com
 - Employee details: first name, last name, department, job title
 - Valid departments: Operations, Finance, IT
 
@@ -22,14 +22,14 @@ This article describes the complete process for onboarding a new RTS employee: c
 ### Step 1 — Run the Onboarding Script on DC01
 
 ```powershell
-cd C:\Users\Richie\Projects\IT\ridgeline-it\scripts
+cd <REPO-PATH>\scripts
 .\Invoke-RTSOnboarding.ps1 -FirstName <First> -LastName <Last> -Department <Dept> -JobTitle "<Title>"
 ```
 
 The script will:
 - Create the AD account in the correct department OU
 - Set the username (first initial + last name, e.g., jchen for Jamie Chen)
-- Set UPN to `<username>@fx934y.onmicrosoft.com`
+- Set UPN to `<username>@<TENANT>.onmicrosoft.com`
 - Assign the user to **All Staff** and the department security group
 - Set a temporary password (`Welcome1!2`) with force-change at first logon
 - Trigger an Azure AD Connect delta sync
@@ -38,7 +38,7 @@ The script will:
 
 Wait 2-3 minutes for the sync to complete, then:
 
-1. Sign in to **admin.microsoft.com** as `admin@fx934y.onmicrosoft.com`
+1. Sign in to **admin.microsoft.com** as `admin@<TENANT>.onmicrosoft.com`
 2. Go to **Users → Active users → [new user]**
 3. Click **Licenses and apps**
 4. Check **Microsoft 365 E5 Developer SKU V2**
@@ -50,7 +50,7 @@ Provide the user with their credentials via a secure channel:
 
 | Field | Value |
 |-------|-------|
-| Username | `<username>@fx934y.onmicrosoft.com` |
+| Username | `<username>@<TENANT>.onmicrosoft.com` |
 | Temp Password | `Welcome1!2` |
 | First login | User will be prompted to set a new password |
 

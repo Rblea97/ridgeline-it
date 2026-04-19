@@ -20,7 +20,7 @@ Before enrolling a device:
 
 - [ ] Device is joined to the `ridgeline.local` domain
 - [ ] Device has internet access (Default Switch NIC connected in Hyper-V)
-- [ ] User account exists in Active Directory with UPN suffix `@fx934y.onmicrosoft.com`
+- [ ] User account exists in Active Directory with UPN suffix `@<TENANT>.onmicrosoft.com`
 - [ ] User account is synced to Azure AD via Azure AD Connect
 - [ ] User has an M365 E5 license assigned in the Microsoft 365 admin center
 - [ ] MDM user scope is set to **All** in Intune (Devices → Enrollment → Automatic Enrollment)
@@ -42,7 +42,7 @@ HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\MDM
   AutoEnrollMDM = 1 (DWORD)
   UseAADCredentialType = 0 (DWORD)
 
-HKLM\SYSTEM\CurrentControlSet\Control\CloudDomainJoin\TenantInfo\a9566324-fd0d-49ef-aa14-7ec036854bca
+HKLM\SYSTEM\CurrentControlSet\Control\CloudDomainJoin\TenantInfo\<TENANT-ID>
   MdmEnrollmentUrl = https://enrollment.manage.microsoft.com/enrollmentserver/discovery.svc
   MdmTermsOfUseUrl = https://portal.manage.microsoft.com/TermsofUse.aspx
   MdmComplianceUrl = https://portal.manage.microsoft.com/?portalAction=Compliance
@@ -58,7 +58,7 @@ Set-ItemProperty -Path $mdmPath -Name 'AutoEnrollMDM' -Value 1 -Type DWord
 Set-ItemProperty -Path $mdmPath -Name 'UseAADCredentialType' -Value 0 -Type DWord
 
 # Set Intune enrollment URLs
-$tenantId = 'a9566324-fd0d-49ef-aa14-7ec036854bca'
+$tenantId = '<TENANT-ID>'
 $regPath = "HKLM:\SYSTEM\CurrentControlSet\Control\CloudDomainJoin\TenantInfo\$tenantId"
 New-Item -Path $regPath -Force | Out-Null
 Set-ItemProperty -Path $regPath -Name 'MdmEnrollmentUrl' -Value 'https://enrollment.manage.microsoft.com/enrollmentserver/discovery.svc'
@@ -72,7 +72,7 @@ Set-ItemProperty -Path $regPath -Name 'MdmComplianceUrl' -Value 'https://portal.
 
 ### Step 1 — Verify user license
 
-1. Sign in to **admin.microsoft.com** as `admin@fx934y.onmicrosoft.com`
+1. Sign in to **admin.microsoft.com** as `admin@<TENANT>.onmicrosoft.com`
 2. Go to **Users → Active users → [username]**
 3. Click the **Licenses and apps** tab
 4. Confirm **Microsoft 365 E5 Developer SKU V2** is checked
@@ -97,7 +97,7 @@ Sign in to the workstation using the user's domain credentials:
 
 1. Open the **Enroll-in-Intune** shortcut from the desktop, or run the following from the Start menu (Run dialog):
    ```
-   ms-device-enrollment:?mode=mdm&username=<upn>@fx934y.onmicrosoft.com&servername=https://enrollment.manage.microsoft.com/enrollmentserver/discovery.svc
+   ms-device-enrollment:?mode=mdm&username=<upn>@<TENANT>.onmicrosoft.com&servername=https://enrollment.manage.microsoft.com/enrollmentserver/discovery.svc
    ```
 2. The **Set up a work or school account** dialog appears
 3. Confirm the username is pre-filled and click **Next**

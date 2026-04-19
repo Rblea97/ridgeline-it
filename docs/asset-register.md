@@ -24,8 +24,8 @@ All VMs are hosted on a single Hyper-V host (Windows 11 Pro).
 
 | Workstation | Primary User | Sam Account | Department | UPN |
 |---|---|---|---|---|
-| WRK01 | Alex Torres | atorres | Operations | atorres@fx934y.onmicrosoft.com |
-| WRK02 | Jordan Reyes | jreyes | Operations | jreyes@fx934y.onmicrosoft.com |
+| WRK01 | Alex Torres | atorres | Operations | atorres@<TENANT>.onmicrosoft.com |
+| WRK02 | Jordan Reyes | jreyes | Operations | jreyes@<TENANT>.onmicrosoft.com |
 
 ## AD User Accounts
 
@@ -58,8 +58,8 @@ All VMs are hosted on a single Hyper-V host (Windows 11 Pro).
 
 | Resource | Value |
 |---|---|
-| M365 tenant | fx934y.onmicrosoft.com |
-| Admin account | admin@fx934y.onmicrosoft.com |
+| M365 tenant | <TENANT>.onmicrosoft.com |
+| Admin account | admin@<TENANT>.onmicrosoft.com |
 | License tier | Microsoft 365 E5 Developer |
 | MDM provider | Microsoft Intune |
 | Sync tool | Azure AD Connect (Entra Connect Sync) on DC01 |

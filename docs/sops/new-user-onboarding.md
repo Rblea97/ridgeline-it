@@ -13,7 +13,7 @@ This procedure covers creating a new employee's Active Directory account, syncin
 ## Prerequisites
 
 - Domain Admin access to DC01 (RIDGELINE\Administrator)
-- Access to Microsoft 365 Admin Center (admin@fx934y.onmicrosoft.com)
+- Access to Microsoft 365 Admin Center (admin@<TENANT>.onmicrosoft.com)
 - New hire details: first name, last name, department, job title
 
 Valid departments: **Operations**, **Finance**, **IT**
@@ -39,7 +39,7 @@ Expected output:
 === RTS New Employee Onboarding ===
 Name       : FirstName LastName
 Username   : flastname
-UPN        : flastname@fx934y.onmicrosoft.com
+UPN        : flastname@<TENANT>.onmicrosoft.com
 Department : Department
 Job Title  : Job Title
 OU         : OU=Department,OU=RTS Users,DC=ridgeline,DC=local
@@ -66,7 +66,7 @@ Next step: Assign M365 E5 license in admin.microsoft.com
 ### Step 3: Communicate Credentials to New Hire
 
 Provide:
-- **Username:** `flastname@fx934y.onmicrosoft.com`
+- **Username:** `flastname@<TENANT>.onmicrosoft.com`
 - **Temp password:** `Welcome1!`
 - User will be prompted to change password at first login
 

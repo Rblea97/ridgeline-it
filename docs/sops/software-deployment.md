@@ -18,7 +18,7 @@ Applies to any Windows desktop application (.exe or .msi installer) deployed to 
 
 | Tool | Purpose | Location |
 |------|---------|----------|
-| Microsoft Win32 Content Prep Tool (IntuneWinAppUtil.exe) | Package installer into .intunewin format | `C:\Users\Richie\Projects\IT\intune-staging\IntuneWinAppUtil.exe` |
+| Microsoft Win32 Content Prep Tool (IntuneWinAppUtil.exe) | Package installer into .intunewin format | `<STAGING-PATH>\IntuneWinAppUtil.exe` |
 | Intune Admin Center | Upload and configure the app | https://intune.microsoft.com |
 
 Download the Win32 Content Prep Tool from:  
@@ -36,7 +36,7 @@ C:\intune-staging\<appname>\<installer.msi>
 
 Example for 7-Zip 24.09:
 ```
-C:\Users\Richie\Projects\IT\intune-staging\7zip\7z2409-x64.msi
+<STAGING-PATH>\7zip\7z2409-x64.msi
 ```
 
 ---
@@ -60,7 +60,7 @@ This produces a `.intunewin` file in the output folder (e.g., `7z2409-x64.intune
 
 ## Step 3 — Upload to Intune
 
-1. Sign in to **intune.microsoft.com** as `admin@fx934y.onmicrosoft.com`
+1. Sign in to **intune.microsoft.com** as `admin@<TENANT>.onmicrosoft.com`
 2. Go to **Apps → All apps → + Add**
 3. App type: **Windows app (Win32)** → click **Select**
 4. Click **Select app package file** → browse to the `.intunewin` file → click **OK**

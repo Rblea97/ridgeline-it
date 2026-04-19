@@ -31,10 +31,10 @@ DC01 Eth2: 172.23.32.70"]
     DC01 -->|"Azure AD Connect
 Password Hash Sync"| EntraID
 
-    subgraph M365["Microsoft 365 · fx934y.onmicrosoft.com"]
+    subgraph M365["Microsoft 365 · <TENANT>.onmicrosoft.com"]
         EntraID["Azure AD / Entra ID
 6 synced users
-UPN: @fx934y.onmicrosoft.com"]
+UPN: @<TENANT>.onmicrosoft.com"]
         Intune["Microsoft Intune
 MDM Scope: All
 WRK01 + WRK02 enrolled"]
@@ -65,7 +65,7 @@ Teams · OneDrive · SharePoint"]
 | On-premises domain | ridgeline.local |
 | NetBIOS name | RIDGELINE |
 | Forest/domain functional level | Windows Server 2016 (WinThreshold) |
-| Cloud tenant | fx934y.onmicrosoft.com |
+| Cloud tenant | <TENANT>.onmicrosoft.com |
 | Sync method | Azure AD Connect (Entra Connect Sync) |
 | Password sync | Password Hash Sync enabled |
 | Sync interval | 30 minutes (delta sync) |
