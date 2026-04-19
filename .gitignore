@@ -17,3 +17,7 @@ secrets.ps1
 Thumbs.db
 .DS_Store
 desktop.ini
+
+# ISO and disk images
+*.iso
+*.img
