@@ -67,7 +67,7 @@ graph TD
     DC01 --- WRK01
     DC01 --- WRK02
     DC01 --> DS
-    DS -->|"Azure AD Connect\nPassword Hash Sync"| Cloud
+    DC01 -->|"Azure AD Connect\nPassword Hash Sync"| Cloud
 ```
 
 | Asset | Hostname | OS | IP | Role |
