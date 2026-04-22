@@ -48,8 +48,14 @@ $SwitchName = "RTS-LAN"
 # Virtual Switch
 Write-Host "[1/4] Creating virtual switch '$SwitchName'..." -ForegroundColor Cyan
 if (-not (Get-VMSwitch -Name $SwitchName -ErrorAction SilentlyContinue)) {
-    New-VMSwitch -Name $SwitchName -SwitchType Internal | Out-Null
-    Write-Host "      Created '$SwitchName'." -ForegroundColor Green
+    try {
+        New-VMSwitch -Name $SwitchName -SwitchType Internal -ErrorAction Stop | Out-Null
+        Write-Host "      Created '$SwitchName'." -ForegroundColor Green
+    }
+    catch {
+        Write-Error "Failed to create virtual switch '$SwitchName': $_"
+        exit 1
+    }
 } else {
     Write-Host "      '$SwitchName' already exists - skipping." -ForegroundColor Yellow
 }
@@ -69,26 +75,41 @@ function New-RTSvm {
 
     $vhdFile = Join-Path $VHDPath "$Name.vhdx"
 
-    New-VM -Name $Name -Generation 2 -MemoryStartupBytes 4GB `
-           -SwitchName $SwitchName -NewVHDPath $vhdFile -NewVHDSizeBytes 60GB | Out-Null
+    try {
+        New-VM -Name $Name -Generation 2 -MemoryStartupBytes 4GB `
+               -SwitchName $SwitchName -NewVHDPath $vhdFile -NewVHDSizeBytes 60GB `
+               -ErrorAction Stop | Out-Null
 
-    Set-VMProcessor -VMName $Name -Count 2
+        Set-VMProcessor -VMName $Name -Count 2 -ErrorAction Stop
 
-    Set-VMMemory -VMName $Name -DynamicMemoryEnabled $true `
-                 -MinimumBytes 2GB -StartupBytes 4GB -MaximumBytes 4GB
+        Set-VMMemory -VMName $Name -DynamicMemoryEnabled $true `
+                     -MinimumBytes 2GB -StartupBytes 4GB -MaximumBytes 4GB `
+                     -ErrorAction Stop
 
-    Add-VMDvdDrive -VMName $Name -Path $ISO
+        Add-VMDvdDrive -VMName $Name -Path $ISO -ErrorAction Stop
 
-    $dvd = Get-VMDvdDrive  -VMName $Name
-    $hdd = Get-VMHardDiskDrive -VMName $Name
-    $net = Get-VMNetworkAdapter -VMName $Name
-    Set-VMFirmware -VMName $Name -BootOrder $dvd, $hdd, $net `
-                   -EnableSecureBoot On `
-                   -SecureBootTemplate "MicrosoftUEFICertificateAuthority"
+        $dvd = Get-VMDvdDrive      -VMName $Name
+        $hdd = Get-VMHardDiskDrive -VMName $Name
+        $net = Get-VMNetworkAdapter -VMName $Name
+        Set-VMFirmware -VMName $Name -BootOrder $dvd, $hdd, $net `
+                       -EnableSecureBoot On `
+                       -SecureBootTemplate "MicrosoftUEFICertificateAuthority" `
+                       -ErrorAction Stop
+    }
+    catch {
+        Write-Error "Failed to provision VM '$Name': $_"
+        return
+    }
 
     if ($EnableTPM) {
-        Set-VMKeyProtector -VMName $Name -NewLocalKeyProtector
-        Enable-VMTPM -VMName $Name
+        try {
+            Set-VMKeyProtector -VMName $Name -NewLocalKeyProtector -ErrorAction Stop
+            Enable-VMTPM -VMName $Name -ErrorAction Stop
+        }
+        catch {
+            Write-Error "Failed to enable virtual TPM on '$Name': $_"
+            return
+        }
     }
 
     Write-Host "  $Name created." -ForegroundColor Green
