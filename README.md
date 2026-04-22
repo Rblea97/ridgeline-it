@@ -1,6 +1,6 @@
 # Ridgeline Technology Services — IT Support Lab
 
-**Technician:** Richard Blea &nbsp;|&nbsp; **Status:** Complete &nbsp;|&nbsp; **Built:** April 2026
+**Technician:** Richard Blea &nbsp;|&nbsp; **Graduating:** May 2026, CU Denver &nbsp;|&nbsp; **Built:** April 2026
 
 ![Windows Server 2022](https://img.shields.io/badge/Windows_Server-2022-0078D4?logo=windows&logoColor=white)
 ![Microsoft Intune](https://img.shields.io/badge/Microsoft_Intune-0078D4?logo=microsoft&logoColor=white)
@@ -8,7 +8,7 @@
 ![PowerShell](https://img.shields.io/badge/PowerShell-5391FE?logo=powershell&logoColor=white)
 ![Hyper-V](https://img.shields.io/badge/Hyper--V-0078D4?logo=windows&logoColor=white)
 
-A hands-on home lab simulating the on-premises and cloud infrastructure of a 20-person company. Demonstrates the core skills required for a Systems Administrator or IT Support role: Active Directory, Microsoft Intune MDM, Entra ID, PowerShell automation, and end-user support.
+A hands-on home lab simulating the on-premises and cloud infrastructure of a 20-person company. Built to demonstrate the core skills required for a Systems Administrator or IT Support role — Active Directory, Microsoft Intune MDM, Entra ID, PowerShell automation, and structured end-user support. Every scenario is documented to professional standard with SOPs, KB articles, and resolved support tickets.
 
 ---
 
@@ -142,16 +142,44 @@ All VMs run on Hyper-V with an internal switch (`RTS-LAN 192.168.1.0/24`). DC01 
 
 ## Screenshots
 
-Deployment proof in [`screenshots/`](screenshots/):
+### Identity & Access
 
-| File | Shows |
-|---|---|
-| `01-aduc-ous.png` | AD Users and Computers — RTS OU structure and users |
-| `02-azure-ad-users.png` | Entra ID — synced RTS users in M365 admin center |
-| `03-intune-devices.png` | Intune — both workstations enrolled and managed |
-| `04-compliance-policy.png` | Intune — RTS-Workstation-Compliance policy |
-| `04b-compliance-status.png` | Intune — compliance monitor showing noncompliant: 2 |
-| `05-7zip-deployed.png` | Intune — 7-Zip installed on both devices |
-| `06-gpo-console.png` | GPMC — RTS-Password-Policy and RTS-Workstation-Policy |
-| `07-dhcp-scope.png` | DHCP — Scope 192.168.1.0 RTS-LAN |
-| `08-password-reset-log.png` | DC01 — password reset audit log entry |
+![AD Users and Computers — RTS OU structure and users](./screenshots/01-aduc-ous.png)
+*Active Directory Users and Computers — RTS OU structure and user accounts*
+
+![Entra ID — synced RTS users in M365 admin center](./screenshots/02-azure-ad-users.png)
+*Entra ID — all 6 RTS users synced from on-prem AD via Azure AD Connect*
+
+### Device Management
+
+![Intune — both workstations enrolled and managed](./screenshots/03-intune-devices.png)
+*Microsoft Intune — WRK01 and WRK02 enrolled and managed*
+
+![Intune — RTS-Workstation-Compliance policy](./screenshots/04-compliance-policy.png)
+*Intune — RTS-Workstation-Compliance policy configuration*
+
+![Intune — compliance monitor showing noncompliant: 2](./screenshots/04b-compliance-status.png)
+*Intune compliance monitor — both VMs noncompliant due to no physical TPM in Hyper-V (accepted risk, see TICKET-003)*
+
+![Intune — 7-Zip installed on both devices](./screenshots/05-7zip-deployed.png)
+*Intune Win32 app deployment — 7-Zip 24.09 successfully installed on all devices*
+
+### Infrastructure
+
+![GPMC — RTS-Password-Policy and RTS-Workstation-Policy](./screenshots/06-gpo-console.png)
+*Group Policy Management Console — RTS-Password-Policy and RTS-Workstation-Policy linked to domain*
+
+![DHCP — Scope 192.168.1.0 RTS-LAN](./screenshots/07-dhcp-scope.png)
+*DHCP — Scope 192.168.1.100–200 active on DC01*
+
+![DC01 — password reset audit log entry](./screenshots/08-password-reset-log.png)
+*Password reset audit log on DC01 — timestamped entry written by Reset-RTSUserPassword.ps1*
+
+---
+
+## What's Next
+
+- Group Policy audit reporting script (PowerShell + CSV export)
+- Bulk M365 license assignment automation via Microsoft Graph API
+- Second domain lab for cross-domain trust relationship scenarios
+- Azure AD Conditional Access policy configuration and testing
