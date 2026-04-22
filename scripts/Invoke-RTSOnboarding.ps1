@@ -20,12 +20,19 @@
 .PARAMETER JobTitle
     Employee job title.
 
+.PARAMETER DefaultPassword
+    Temporary password assigned to the new account. The user must change it at
+    first logon. Defaults to 'Welcome1!2'.
+
 .EXAMPLE
     .\Invoke-RTSOnboarding.ps1 -FirstName "Jamie" -LastName "Chen" -Department "Finance" -JobTitle "Accountant"
 
+.EXAMPLE
+    .\Invoke-RTSOnboarding.ps1 -FirstName "Alex" -LastName "Rivera" -Department "IT" -JobTitle "Help Desk Technician"
+
 .NOTES
     Requires: ActiveDirectory module, ADSync module
-    Run as: Domain Admin on DC01
+    Run as: Domain Admin on DC01 (192.168.1.10)
 #>
 
 #Requires -Modules ActiveDirectory, ADSync
@@ -43,7 +50,7 @@ param (
     [SecureString]$DefaultPassword = (ConvertTo-SecureString "Welcome1!2" -AsPlainText -Force)
 )
 
-$TenantDomain    = "<TENANT>.onmicrosoft.com"
+$TenantDomain    = "ridgelinets.onmicrosoft.com"
 
 $OUMap = @{
     "Operations" = "OU=Operations,OU=RTS Users,DC=ridgeline,DC=local"
@@ -88,7 +95,7 @@ try {
     Write-Host "    AD account created." -ForegroundColor Green
 }
 catch {
-    Write-Error "Failed to create AD account: $_"
+    Write-Error "Failed to create AD account for ${Sam}: $_"
     exit 1
 }
 
