@@ -1,5 +1,3 @@
-#Requires -Modules ActiveDirectory
-
 <#
 .SYNOPSIS
     Resets an Active Directory user password and logs the action.
@@ -25,9 +23,11 @@
     .\Reset-RTSUserPassword.ps1 -SamAccountName jreyes -NewPassword 'Temp2026!'
 
 .NOTES
-    Must be run on DC01 as a domain administrator.
-    The log directory C:\IT\Logs must exist before running.
+    Must be run on DC01 (192.168.1.10) as a domain administrator.
+    The log directory is created automatically if it does not exist.
 #>
+
+#Requires -Modules ActiveDirectory
 
 [CmdletBinding()]
 param(
@@ -43,34 +43,63 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
 # --- Validate user exists ---
-$user = Get-ADUser -Identity $SamAccountName -Properties DisplayName, LockedOut -ErrorAction Stop
-Write-Host "Found user: $($user.DisplayName) ($SamAccountName)"
+try {
+    $user = Get-ADUser -Identity $SamAccountName -Properties DisplayName, LockedOut -ErrorAction Stop
+    Write-Host "Found user: $($user.DisplayName) ($SamAccountName)"
+}
+catch {
+    Write-Error "User '$SamAccountName' not found in Active Directory: $_"
+    exit 1
+}
 
 # --- Reset password ---
-$securePassword = ConvertTo-SecureString $NewPassword -AsPlainText -Force
-Set-ADAccountPassword -Identity $SamAccountName -NewPassword $securePassword -Reset
-Write-Host 'Password reset.'
+try {
+    $securePassword = ConvertTo-SecureString $NewPassword -AsPlainText -Force
+    Set-ADAccountPassword -Identity $SamAccountName -NewPassword $securePassword -Reset -ErrorAction Stop
+    Write-Host 'Password reset.'
+}
+catch {
+    Write-Error "Failed to reset password for '$SamAccountName': $_"
+    exit 1
+}
 
 # --- Unlock if locked ---
 if ($user.LockedOut) {
-    Unlock-ADAccount -Identity $SamAccountName
-    Write-Host 'Account unlocked.'
+    try {
+        Unlock-ADAccount -Identity $SamAccountName -ErrorAction Stop
+        Write-Host 'Account unlocked.'
+    }
+    catch {
+        Write-Error "Failed to unlock account '$SamAccountName': $_"
+        exit 1
+    }
 }
 
 # --- Force password change at next logon ---
-Set-ADUser -Identity $SamAccountName -ChangePasswordAtLogon $true
-Write-Host 'User will be prompted to change password at next logon.'
-
-# --- Log the action ---
-$logDir = Split-Path $LogPath
-if (-not (Test-Path $logDir)) {
-    New-Item -Path $logDir -ItemType Directory -Force | Out-Null
+try {
+    Set-ADUser -Identity $SamAccountName -ChangePasswordAtLogon $true -ErrorAction Stop
+    Write-Host 'User will be prompted to change password at next logon.'
+}
+catch {
+    Write-Error "Failed to set ChangePasswordAtLogon for '$SamAccountName': $_"
+    exit 1
 }
 
-$timestamp  = Get-Date -Format 'yyyy-MM-dd HH:mm:ss'
-$adminWho   = [System.Security.Principal.WindowsIdentity]::GetCurrent().Name
-$logEntry   = "$timestamp`t$adminWho`tRESET`t$SamAccountName`t$($user.DisplayName)"
-Add-Content -Path $LogPath -Value $logEntry
+# --- Log the action ---
+try {
+    $logDir = Split-Path $LogPath
+    if (-not (Test-Path $logDir)) {
+        New-Item -Path $logDir -ItemType Directory -Force | Out-Null
+    }
 
-Write-Host "`nLogged to: $LogPath"
-Write-Host "Entry: $logEntry"
+    $timestamp  = Get-Date -Format 'yyyy-MM-dd HH:mm:ss'
+    $adminWho   = [System.Security.Principal.WindowsIdentity]::GetCurrent().Name
+    $logEntry   = "$timestamp`t$adminWho`tRESET`t$SamAccountName`t$($user.DisplayName)"
+    Add-Content -Path $LogPath -Value $logEntry -ErrorAction Stop
+
+    Write-Host "`nLogged to: $LogPath"
+    Write-Host "Entry: $logEntry"
+}
+catch {
+    Write-Error "Password was reset but failed to write log entry to '$LogPath': $_"
+}
