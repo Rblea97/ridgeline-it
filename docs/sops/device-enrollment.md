@@ -1,8 +1,8 @@
 # SOP: Intune Device Enrollment
 
 **Organization:** Ridgeline Technology Services  
-**Version:** 1.0  
-**Last Updated:** 2026-04-18
+**Version:** 1.1  
+**Last Updated:** 2026-04-22
 
 ---
 
@@ -80,7 +80,9 @@ Set-ItemProperty -Path $regPath -Name 'MdmComplianceUrl' -Value 'https://portal.
 
 ### Step 2 — Add user to local Administrators (temporary)
 
-On the domain controller, run:
+1. Open **Remote Desktop Connection** on your technician workstation and connect to DC01 at `192.168.1.10` using `RIDGELINE\Administrator`.
+2. On DC01, open **PowerShell as Administrator** (Start → right-click **Windows PowerShell** → **Run as administrator**).
+3. Run the following command, replacing `<username>` with the user's AD login and `<hostname>` with the workstation's computer name:
 
 ```powershell
 Add-LocalGroupMember -Group 'Administrators' -Member 'RIDGELINE\<username>' -ComputerName <hostname>
@@ -93,17 +95,20 @@ Add-LocalGroupMember -Group 'Administrators' -Member 'RIDGELINE\<username>' -Com
 Sign in to the workstation using the user's domain credentials:  
 `RIDGELINE\<username>` / `<password>`
 
-### Step 4 — Run the enrollment shortcut
+### Step 4 — Run the enrollment URI
 
-1. Open the **Enroll-in-Intune** shortcut from the desktop, or run the following from the Start menu (Run dialog):
+There is no pre-installed enrollment shortcut on fresh workstations. Use the following steps to trigger enrollment directly:
+
+1. Press **Win+R** to open the Run dialog (or open Start and type the URI into the search bar).
+2. Paste the following URI, replacing `<upn>` with the user's full UPN (e.g., `jsmith@<TENANT>.onmicrosoft.com`):
    ```
-   ms-device-enrollment:?mode=mdm&username=<upn>@<TENANT>.onmicrosoft.com&servername=https://enrollment.manage.microsoft.com/enrollmentserver/discovery.svc
+   ms-device-enrollment:?mode=mdm&username=<upn>&servername=https://enrollment.manage.microsoft.com/enrollmentserver/discovery.svc
    ```
-2. The **Set up a work or school account** dialog appears
-3. Confirm the username is pre-filled and click **Next**
-4. Enter the user's M365 password when prompted
-5. Complete any additional prompts
-6. On success, the dialog closes automatically
+3. Press **Enter**. The **Set up a work or school account** dialog appears.
+4. Confirm the username is pre-filled and click **Next**.
+5. Enter the user's M365 password when prompted.
+6. Complete any additional prompts.
+7. On success, the dialog closes automatically.
 
 ### Step 5 — Verify enrollment
 
