@@ -1,7 +1,7 @@
 # SOP: New Employee Onboarding
 
 **Company:** Ridgeline Technology Services
-**Version:** 1.0
+**Version:** 1.1
 **Last Updated:** April 2026
 
 ---
@@ -10,11 +10,14 @@
 
 This procedure covers creating a new employee's Active Directory account, syncing it to Azure AD (Entra ID), assigning an M365 E5 license, and confirming first login.
 
-## Prerequisites
+## Prerequisites / Before You Begin
 
-- Domain Admin access to DC01 (RIDGELINE\Administrator)
-- Access to Microsoft 365 Admin Center (admin@<TENANT>.onmicrosoft.com)
-- New hire details: first name, last name, department, job title
+Before starting this procedure, confirm you have:
+
+- [ ] Remote Desktop (RDP) access to DC01 at `192.168.1.10` using `RIDGELINE\Administrator`
+- [ ] The onboarding script present on DC01 at `C:\scripts\Invoke-RTSOnboarding.ps1`
+- [ ] Sign-in access to the Microsoft 365 Admin Center at [admin.microsoft.com](https://admin.microsoft.com) using `admin@<TENANT>.onmicrosoft.com`
+- [ ] The new hire's full name, department, and job title
 
 Valid departments: **Operations**, **Finance**, **IT**
 
@@ -22,12 +25,23 @@ Valid departments: **Operations**, **Finance**, **IT**
 
 ## Procedure
 
-### Step 1: Create Active Directory Account
+### Step 1: Connect to DC01
 
-On DC01, open PowerShell as Administrator and run:
+1. On your technician workstation, open **Remote Desktop Connection** (Start → search "Remote Desktop Connection").
+2. In the **Computer** field, enter `192.168.1.10` and click **Connect**.
+3. Log in as `RIDGELINE\Administrator` with the domain admin password.
+4. Once logged in, open **PowerShell as Administrator** (Start → right-click **Windows PowerShell** → **Run as administrator**).
+5. Navigate to the scripts directory:
+   ```powershell
+   cd C:\scripts
+   ```
+
+### Step 2: Create Active Directory Account
+
+Run the onboarding script with the new hire's details:
 
 ```powershell
-.\scripts\Invoke-RTSOnboarding.ps1 `
+.\Invoke-RTSOnboarding.ps1 `
     -FirstName  "FirstName" `
     -LastName   "LastName" `
     -Department "Department" `
@@ -55,26 +69,32 @@ OU         : OU=Department,OU=RTS Users,DC=ridgeline,DC=local
 Next step: Assign M365 E5 license in admin.microsoft.com
 ```
 
-### Step 2: Assign M365 License
+### Step 3: Assign M365 License
 
-1. Go to [admin.microsoft.com](https://admin.microsoft.com)
-2. Navigate to **Users → Active users**
-3. Wait 2–3 minutes after sync for the user to appear
-4. Click the new user → **Licenses and apps** tab
-5. Check **Microsoft 365 E5 Developer** → **Save changes**
+1. Go to [admin.microsoft.com](https://admin.microsoft.com).
+2. Navigate to **Users → Active users**.
+3. Wait 2–3 minutes after sync for the user to appear, then refresh the page.
+4. Click the new user's display name to open their profile.
+5. Click the **Licenses and apps** tab.
+6. Check **Microsoft 365 E5 Developer** → click **Save changes**.
 
-### Step 3: Communicate Credentials to New Hire
+### Step 4: Communicate Credentials to New Hire
 
-Provide:
-- **Username:** `flastname@<TENANT>.onmicrosoft.com`
-- **Temp password:** `Welcome1!`
-- User will be prompted to change password at first login
+1. Open a new email or Teams message addressed to the new hire's personal email address (not their new work account).
+2. Include the following information:
+   - **Username:** `flastname@<TENANT>.onmicrosoft.com`
+   - **Temporary password:** `Welcome1!`
+   - **Instructions:** Sign in at [portal.office.com](https://portal.office.com). You will be prompted to set a new password on first login.
+3. Send the message and note the date/time you sent it.
 
-### Step 4: Verify First Login
+### Step 5: Verify Successful Onboarding
 
-Have the employee sign in on their assigned workstation using `RIDGELINE\flastname`. Confirm:
-- Password change prompt appears and completes successfully
-- They can access M365 apps at portal.office.com
+After the new hire has completed first login, confirm the following as the technician:
+
+1. In **Active Directory Users and Computers** on DC01, navigate to **OU=RTS Users → OU=Department** and confirm the account exists and is enabled.
+2. In [admin.microsoft.com](https://admin.microsoft.com) → **Users → Active users**, confirm the account shows a sync status of **In cloud** or **Synced with Active Directory**.
+3. On the user's profile → **Licenses and apps** tab, confirm **Microsoft 365 E5 Developer** is listed as assigned.
+4. Ask the new hire to confirm they can access [portal.office.com](https://portal.office.com) and open at least one M365 app (e.g., Outlook or Teams).
 
 ---
 
@@ -89,7 +109,7 @@ Drew,Kim,Finance,Junior Accountant
 ```
 
 ```powershell
-.\scripts\New-RTSUser.ps1 -CsvPath ".\new-hires.csv"
+.\New-RTSUser.ps1 -CsvPath ".\new-hires.csv"
 ```
 
 ---
