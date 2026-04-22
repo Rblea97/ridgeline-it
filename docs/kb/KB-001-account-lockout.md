@@ -2,7 +2,7 @@
 
 **Category:** Account Management  
 **Applies To:** All RTS domain users  
-**Last Updated:** 2026-04-18
+**Last Updated:** 2026-04-22
 
 ---
 
@@ -26,19 +26,29 @@ Search-ADAccount -LockedOut | Select-Object Name, SamAccountName, LockedOut
 
 # Step 2 — Unlock the account
 Unlock-ADAccount -Identity <SamAccountName>
-
-# Step 3 — Verify
-Get-ADUser <SamAccountName> -Properties LockedOut | Select-Object Name, LockedOut
 ```
 
 The user can log in immediately after the account is unlocked — no restart or additional action required.
+
+## Verification
+
+Confirm the account is no longer locked:
+
+```powershell
+Get-ADUser <SamAccountName> -Properties LockedOut | Select-Object Name, LockedOut
+```
+
+Expected output: `LockedOut : False`
+
+Ask the user to attempt login and confirm access is restored before closing the ticket.
 
 ## Prevention
 
 - Users should wait and try again rather than repeatedly guessing a password
 - For repeated lockouts, consider whether the user needs a password reset:
   ```powershell
-  .\Reset-RTSUserPassword.ps1 -SamAccountName <SamAccountName>
+  # Example: reset password for atorres
+  .\Reset-RTSUserPassword.ps1 -SamAccountName atorres
   ```
 - Review Event ID **4740** on DC01 for the source machine and timestamp of the lockout
 
