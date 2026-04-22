@@ -8,16 +8,20 @@
     and exports a compliance report to a CSV file with a timestamped filename.
 
 .PARAMETER TenantId
-    The Azure AD tenant ID. Defaults to the RTS tenant.
+    The Azure AD tenant ID (GUID). Found in Entra admin center -> Overview.
+
+.PARAMETER ClientId
+    The application (client) ID of the registered Entra app with
+    DeviceManagementManagedDevices.Read.All permission granted.
 
 .PARAMETER OutputPath
     Directory to write the CSV report. Defaults to the user's Documents folder.
 
 .EXAMPLE
-    .\Get-RTSComplianceReport.ps1
+    .\Get-RTSComplianceReport.ps1 -TenantId "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" -ClientId "yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy"
 
 .EXAMPLE
-    .\Get-RTSComplianceReport.ps1 -OutputPath "C:\Reports"
+    .\Get-RTSComplianceReport.ps1 -TenantId "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" -ClientId "yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy" -OutputPath "C:\Reports"
 
 .NOTES
     No additional modules required — uses Invoke-RestMethod with native OAuth2
@@ -25,12 +29,23 @@
 
     Run on the host machine (not inside a VM).
     A browser code prompt will appear during authentication.
+
+    To register the required Entra app:
+      1. Entra admin center -> App registrations -> New registration
+      2. Add API permission: Microsoft Graph -> Application ->
+         DeviceManagementManagedDevices.Read.All
+      3. Grant admin consent
+      4. Note the Application (client) ID and Directory (tenant) ID
 #>
 
 [CmdletBinding()]
 param(
-    [string]$TenantId  = '<TENANT-ID>',
-    [string]$ClientId  = '<CLIENT-ID>',
+    [Parameter(Mandatory)]
+    [string]$TenantId,
+
+    [Parameter(Mandatory)]
+    [string]$ClientId,
+
     [string]$OutputPath = [Environment]::GetFolderPath('MyDocuments')
 )
 
@@ -40,13 +55,20 @@ $ErrorActionPreference = 'Stop'
 # --- Device code authentication ---
 Write-Host '[1/3] Connecting to Microsoft Graph...'
 
-$deviceCodeResponse = Invoke-RestMethod `
-    -Method Post `
-    -Uri "https://login.microsoftonline.com/$TenantId/oauth2/v2.0/devicecode" `
-    -Body @{
-        client_id = $ClientId
-        scope     = 'https://graph.microsoft.com/DeviceManagementManagedDevices.Read.All'
-    }
+try {
+    $deviceCodeResponse = Invoke-RestMethod `
+        -Method Post `
+        -Uri "https://login.microsoftonline.com/$TenantId/oauth2/v2.0/devicecode" `
+        -Body @{
+            client_id = $ClientId
+            scope     = 'https://graph.microsoft.com/DeviceManagementManagedDevices.Read.All'
+        } `
+        -ErrorAction Stop
+}
+catch {
+    Write-Error "Failed to initiate device code authentication against tenant '$TenantId': $_"
+    exit 1
+}
 
 Write-Host "`nTo sign in, use a web browser to open:" -ForegroundColor Yellow
 Write-Host "  $($deviceCodeResponse.verification_uri)" -ForegroundColor Cyan
@@ -77,7 +99,8 @@ while ((Get-Date) -lt $deadline) {
     catch {
         $errBody = $_.ErrorDetails.Message | ConvertFrom-Json -ErrorAction SilentlyContinue
         if ($errBody.error -eq 'authorization_pending') { continue }
-        throw
+        Write-Error "Authentication polling failed: $_"
+        exit 1
     }
 }
 
@@ -95,11 +118,17 @@ $headers = @{ Authorization = "Bearer $accessToken" }
 $uri     = 'https://graph.microsoft.com/v1.0/deviceManagement/managedDevices'
 $devices = [System.Collections.Generic.List[object]]::new()
 
-do {
-    $page = Invoke-RestMethod -Uri $uri -Headers $headers -Method Get
-    $devices.AddRange([object[]]$page.value)
-    $uri  = if ($page.PSObject.Properties['@odata.nextLink']) { $page.'@odata.nextLink' } else { $null }
-} while ($uri)
+try {
+    do {
+        $page = Invoke-RestMethod -Uri $uri -Headers $headers -Method Get -ErrorAction Stop
+        $devices.AddRange([object[]]$page.value)
+        $uri  = if ($page.PSObject.Properties['@odata.nextLink']) { $page.'@odata.nextLink' } else { $null }
+    } while ($uri)
+}
+catch {
+    Write-Error "Failed to retrieve managed devices from Microsoft Graph: $_"
+    exit 1
+}
 
 if ($devices.Count -eq 0) {
     Write-Warning 'No managed devices found in tenant.'
@@ -125,7 +154,14 @@ $timestamp = Get-Date -Format 'yyyyMMdd-HHmmss'
 $csvPath   = Join-Path $OutputPath "RTS-ComplianceReport-$timestamp.csv"
 
 Write-Host "[3/3] Exporting $($report.Count) device(s) to $csvPath"
-$report | Export-Csv -Path $csvPath -NoTypeInformation -Encoding UTF8
+
+try {
+    $report | Export-Csv -Path $csvPath -NoTypeInformation -Encoding UTF8 -ErrorAction Stop
+}
+catch {
+    Write-Error "Failed to write compliance report to '$csvPath': $_"
+    exit 1
+}
 
 # --- Console summary ---
 Write-Host "`n=== RTS Compliance Summary ===" -ForegroundColor Cyan
