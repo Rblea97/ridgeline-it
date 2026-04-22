@@ -2,36 +2,50 @@
 
 **Category:** Software Deployment  
 **Applies To:** All RTS-managed workstations  
-**Last Updated:** 2026-04-18
+**Last Updated:** 2026-04-22
 
 ---
 
-## Overview
+## Symptoms
 
-Software for RTS workstations is deployed centrally through Microsoft Intune. This article covers how to package and deploy a Win32 application.
+A user or manager submits a software request ticket (e.g., "I need VLC Media Player installed on my workstation"). The software is not currently in the Intune app catalog, and the user cannot install it themselves because standard user accounts do not have local administrator rights on RTS-managed workstations.
+
+## Cause
+
+RTS workstations are managed via Microsoft Intune with standard user permissions enforced by policy. Users cannot install software locally. All software must be packaged as a Win32 app, uploaded to Intune, and deployed through the Intune management pipeline to ensure it is installed consistently, inventoried, and removable by IT.
 
 ## Tools Required
 
-- **IntuneWinAppUtil.exe** — located at `<STAGING-PATH>\IntuneWinAppUtil.exe`
+- **IntuneWinAppUtil.exe** — located at `C:\intune-staging\IntuneWinAppUtil.exe`
 - **Intune Admin Center** — intune.microsoft.com
 
 ## Procedure
 
 ### Step 1 — Download the Installer
 
-Save the installer (.exe or .msi) to a dedicated staging folder:
+Save the installer (.exe or .msi) to a dedicated staging folder named after the application:
 
 ```
-<STAGING-PATH>\<appname>\<installer>
+C:\intune-staging\<AppName>\<installer>
+```
+
+**Example — staging VLC:**
+```
+C:\intune-staging\VLC\vlc-3.0.21-win64.exe
 ```
 
 ### Step 2 — Package with Win32 Content Prep Tool
 
 ```cmd
-IntuneWinAppUtil.exe -c "<source-folder>" -s "<installer-file>" -o "C:\intune-staging\output" -q
+IntuneWinAppUtil.exe -c "C:\intune-staging\<AppName>" -s "<installer-file>" -o "C:\intune-staging\output" -q
 ```
 
-This creates a `.intunewin` file in the output folder.
+**Example — package VLC:**
+```cmd
+IntuneWinAppUtil.exe -c "C:\intune-staging\VLC" -s "vlc-3.0.21-win64.exe" -o "C:\intune-staging\output" -q
+```
+
+This creates a `.intunewin` file (e.g., `vlc-3.0.21-win64.intunewin`) in `C:\intune-staging\output`.
 
 ### Step 3 — Upload to Intune
 
@@ -50,15 +64,22 @@ This creates a `.intunewin` file in the output folder.
 | Detection rule | File existence in `C:\Program Files\<AppName>\` |
 | Assignment | Required — All Devices |
 
+**Example — VLC install/uninstall commands:**
+- Install: `vlc-3.0.21-win64.exe /S`
+- Uninstall: `C:\Program Files\VideoLAN\VLC\uninstall.exe /S`
+- Detection: File exists at `C:\Program Files\VideoLAN\VLC\vlc.exe`
+
 ### Step 5 — Verify Deployment
 
 After ~30 minutes, check **Apps → [App name] → Device install status** in Intune, or run on the workstation:
 
 ```powershell
 Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*' |
-    Where-Object { $_.DisplayName -like '*<AppName>*' } |
+    Where-Object { $_.DisplayName -like '*VLC*' } |
     Select-Object DisplayName, DisplayVersion
 ```
+
+Expected output shows the app name and version. Confirm with the user that the application launches successfully.
 
 ## Currently Deployed Apps
 
