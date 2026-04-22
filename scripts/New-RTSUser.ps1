@@ -10,6 +10,10 @@
 .PARAMETER CsvPath
     Path to the input CSV file.
 
+.PARAMETER DefaultPassword
+    Temporary password assigned to all new accounts. Users must change it at
+    first logon. Defaults to 'Welcome1!2'.
+
 .EXAMPLE
     .\New-RTSUser.ps1 -CsvPath ".\new-hires.csv"
 
@@ -17,9 +21,12 @@
     FirstName,LastName,Department,JobTitle
     Taylor,Morgan,Operations,Project Coordinator
 
+.EXAMPLE
+    .\New-RTSUser.ps1 -CsvPath "C:\IT\Imports\march-hires.csv"
+
 .NOTES
     Requires: ActiveDirectory module, ADSync module
-    Run as: Domain Admin on DC01
+    Run as: Domain Admin on DC01 (192.168.1.10)
     Valid departments: Operations, Finance, IT
 #>
 
@@ -34,7 +41,7 @@ param (
     [SecureString]$DefaultPassword = (ConvertTo-SecureString "Welcome1!2" -AsPlainText -Force)
 )
 
-$TenantDomain    = "<TENANT>.onmicrosoft.com"
+$TenantDomain    = "ridgelinets.onmicrosoft.com"
 
 $OUMap = @{
     "Operations" = "OU=Operations,OU=RTS Users,DC=ridgeline,DC=local"
@@ -83,14 +90,14 @@ foreach ($User in $Users) {
             -ChangePasswordAtLogon $true `
             -ErrorAction       Stop
 
-        Add-ADGroupMember -Identity "All Staff"                  -Members $Sam
-        Add-ADGroupMember -Identity $GroupMap[$User.Department]  -Members $Sam
+        Add-ADGroupMember -Identity "All Staff"                  -Members $Sam -ErrorAction Stop
+        Add-ADGroupMember -Identity $GroupMap[$User.Department]  -Members $Sam -ErrorAction Stop
 
         Write-Host "[+] Created: $Sam ($UPN)" -ForegroundColor Green
         $Created += $Sam
     }
     catch {
-        Write-Warning "[-] Failed to create $Sam`: $_"
+        Write-Error "Failed to create or configure $Sam`: $_"
         $Failed += $Sam
     }
 }
