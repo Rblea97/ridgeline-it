@@ -1,11 +1,11 @@
 # TICKET-007: OneDrive Sync Error — Invalid Filename Characters
 
-**Ticket ID:** TICKET-007  
-**Date:** 2026-04-18  
-**Reported by:** Alex Torres (atorres)  
-**Assigned to:** Richard Blea (Lab Admin)  
-**Status:** Closed — Resolved  
-**Priority:** Low  
+**Ticket ID:** TICKET-007
+**Date:** 2026-04-18
+**Reported by:** Alex Torres (atorres)
+**Assigned to:** Richard Blea (Lab Admin)
+**Status:** Closed — Resolved
+**Priority:** Low
 **Category:** Cloud Services / OneDrive
 
 ---
@@ -21,9 +21,10 @@ User Alex Torres reported that a file saved to their OneDrive for Business folde
 | Field | Value |
 |-------|-------|
 | Affected User | atorres (Alex Torres) |
-| Device | WRK01 (DESKTOP-4PL0V3F) |
-| Service | OneDrive for Business (<TENANT>.onmicrosoft.com) |
+| Device | WRK01 (DESKTOP-4PL0V3F), IP 192.168.1.102 |
+| Service | OneDrive for Business (ridgeline-it.onmicrosoft.com) |
 | Problematic File | `Budget<Final>.xlsx` |
+| OneDrive Client Version | Confirmed syncing — version visible in OneDrive Settings → About |
 
 ---
 
@@ -61,7 +62,7 @@ Files ending with a period or space are also blocked.
 
 ### Step 1 — Identify the problem file
 
-Click the **OneDrive icon** in the system tray → click the sync error to view affected files.
+Click the **OneDrive icon** in the system tray → click the sync error notification to view affected files. The filename `Budget<Final>.xlsx` was listed as the cause.
 
 ### Step 2 — Rename the file
 
@@ -73,15 +74,15 @@ Budget<Final>.xlsx  →  Budget-Final.xlsx
 
 ### Step 3 — Verify sync
 
-After renaming, OneDrive automatically retries the upload. The error badge clears within 30–60 seconds and the file appears in OneDrive on the web.
+After renaming, OneDrive automatically retried the upload. The error badge cleared within 30–60 seconds and the file appeared in OneDrive on the web at `https://ridgeline-it-my.sharepoint.com`.
 
 ---
 
 ## Lessons Learned
 
-- Educate users not to use special characters (`< > : " * ? \ / |`) in filenames, especially in OneDrive-synced folders.
-- Consider deploying a Group Policy or OneDrive Known Folder Move configuration to prevent sync issues proactively.
-- The [Microsoft OneDrive sync error documentation](https://support.microsoft.com/en-us/office/restrictions-and-limitations-in-onedrive-and-sharepoint-64883a5d-228e-48f5-b3d2-eb39e07630fa) lists all restricted characters and filenames.
+- Educate users not to use special characters (`< > : " * ? \ / |`) in filenames saved to OneDrive-synced folders. A one-page tip sheet distributed during onboarding can prevent repeat incidents.
+- Consider deploying OneDrive Known Folder Move via Intune configuration profile so that Desktop and Documents are always synced — this makes sync errors visible immediately rather than when users manually move files.
+- The [Microsoft OneDrive sync error documentation](https://support.microsoft.com/en-us/office/restrictions-and-limitations-in-onedrive-and-sharepoint-64883a5d-228e-48f5-b3d2-eb39e07630fa) lists all restricted characters and filenames; bookmark it for recurring sync issues.
 
 ---
 
