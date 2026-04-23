@@ -17,7 +17,7 @@ RTS user accounts are not created automatically. Every new employee requires a m
 ## Prerequisites
 
 - Access to DC01 as a domain administrator
-- Access to admin.microsoft.com as `admin@ridgeline.onmicrosoft.com`
+- Access to admin.microsoft.com as `admin@ridgelinets.onmicrosoft.com`
 - Employee details: first name, last name, department, job title
 - Valid departments: Operations, Finance, IT
 
@@ -39,7 +39,7 @@ cd C:\ridgeline-it\scripts
 The script will:
 - Create the AD account in the correct department OU
 - Set the username (first initial + last name, e.g., `jchen` for Jamie Chen)
-- Set UPN to `<username>@ridgeline.onmicrosoft.com`
+- Set UPN to `<username>@ridgelinets.onmicrosoft.com`
 - Assign the user to **All Staff** and the department security group
 - Set a temporary password (`Welcome1!2`) with force-change at first logon
 - Trigger an Azure AD Connect delta sync
@@ -48,7 +48,7 @@ The script will:
 
 Wait 2-3 minutes for the sync to complete, then:
 
-1. Sign in to **admin.microsoft.com** as `admin@ridgeline.onmicrosoft.com`
+1. Sign in to **admin.microsoft.com** as `admin@ridgelinets.onmicrosoft.com`
 2. Go to **Users → Active users → [new user]**
 3. Click **Licenses and apps**
 4. Check **Microsoft 365 E5 Developer SKU V2**
@@ -60,11 +60,11 @@ Provide the user with their credentials via a secure channel:
 
 | Field | Value |
 |-------|-------|
-| Username | `<username>@ridgeline.onmicrosoft.com` |
+| Username | `<username>@ridgelinets.onmicrosoft.com` |
 | Temp Password | `Welcome1!2` |
 | First login | User will be prompted to set a new password |
 
-**Example for Jamie Chen:** username is `jchen@ridgeline.onmicrosoft.com`
+**Example for Jamie Chen:** username is `jchen@ridgelinets.onmicrosoft.com`
 
 ## Verification
 
