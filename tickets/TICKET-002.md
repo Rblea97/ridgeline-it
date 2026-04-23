@@ -24,7 +24,7 @@ Microsoft Azure AD Cloud Sync agent was installed on DC01 as the initial sync me
 | Domain | ridgeline.local |
 | Failed Component | Azure AD Cloud Sync agent (Windows service: `AADConnectProvisioningAgent`) |
 | Resolution Component | Azure AD Connect (Entra Connect Sync) |
-| M365 Tenant | ridgeline-it.onmicrosoft.com |
+| M365 Tenant | ridgelinets.onmicrosoft.com |
 | Blocked Endpoint | `servicebus.windows.net:443` (outbound TCP) |
 
 ---
@@ -89,7 +89,7 @@ After the initial sync, all 6 users appeared in Azure AD (Entra ID) within 10 mi
 
 ## Outcome
 
-All 6 RTS users synced to Azure AD with UPN suffix `@ridgeline-it.onmicrosoft.com`. Azure AD Connect runs a scheduled delta sync every 30 minutes on DC01.
+All 6 RTS users synced to Azure AD with UPN suffix `@ridgelinets.onmicrosoft.com`. Azure AD Connect runs a scheduled delta sync every 30 minutes on DC01.
 
 ---
 
