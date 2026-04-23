@@ -22,7 +22,7 @@ New employee Jamie Chen joined the Finance department as a Financial Analyst. An
 |-------|-------|
 | New User | Jamie Chen |
 | Username | jchen |
-| UPN | jchen@ridgeline-it.onmicrosoft.com |
+| UPN | jchen@ridgelinets.onmicrosoft.com |
 | Department | Finance |
 | Job Title | Financial Analyst |
 | OU | OU=Finance,OU=RTS Users,DC=ridgeline,DC=local |
@@ -48,7 +48,7 @@ Not applicable — this is a provisioning request, not an incident. A script def
 **Script output:**
 - AD account `jchen` created in `OU=Finance,OU=RTS Users,DC=ridgeline,DC=local`
 - Added to security groups: **All Staff**, **Finance Users**
-- UPN set to `jchen@ridgeline-it.onmicrosoft.com`
+- UPN set to `jchen@ridgelinets.onmicrosoft.com`
 - Temporary password: `Welcome1!2` (user must change at first logon)
 - Azure AD Connect delta sync triggered (Result: Success)
 
@@ -72,7 +72,7 @@ Temporary credentials communicated to user via secure channel:
 
 | Field | Value |
 |-------|-------|
-| Username | jchen@ridgeline-it.onmicrosoft.com |
+| Username | jchen@ridgelinets.onmicrosoft.com |
 | Temp Password | Welcome1!2 |
 | First Login | User will be prompted to set a new password |
 
