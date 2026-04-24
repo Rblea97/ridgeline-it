@@ -32,12 +32,12 @@ services:
       ADMIN_FIRSTNAME: Richard
       ADMIN_LASTNAME: Blea
       ADMIN_EMAIL: ${ADMIN_EMAIL}
-      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
-      HELPDESK_NAME: Ridgeline IT Support
-      SITE_URL: http://localhost:8080
+      ADMIN_USER: radmin
+      ADMIN_PASS: ${ADMIN_PASS}
+      INSTALL_NAME: Ridgeline IT Support
+      INSTALL_EMAIL: helpdesk@ridgeline.local
       SMTP_HOST: ""
-      SMTP_FROM: ${ADMIN_EMAIL}
-      SMTP_TLS: "false"
+      SMTP_TLS: "0"
     volumes:
       - osticket_data:/data
     restart: unless-stopped
