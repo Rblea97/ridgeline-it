@@ -36,6 +36,7 @@ services:
       ADMIN_PASS: ${ADMIN_PASS}
       INSTALL_NAME: Ridgeline IT Support
       INSTALL_EMAIL: helpdesk@ridgeline.local
+      INSTALL_SECRET: ${INSTALL_SECRET}
       SMTP_HOST: ""
       SMTP_TLS: "0"
     volumes:
