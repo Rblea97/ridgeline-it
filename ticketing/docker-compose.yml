@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: osticket
+      MYSQL_USER: osticket
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  osticket:
+    image: tiredofit/osticket:latest
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8080:80"
+    environment:
+      DB_HOST: db
+      DB_NAME: osticket
+      DB_USER: osticket
+      DB_PASS: ${MYSQL_PASSWORD}
+      ADMIN_FIRSTNAME: Richard
+      ADMIN_LASTNAME: Blea
+      ADMIN_EMAIL: ${ADMIN_EMAIL}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+      HELPDESK_NAME: Ridgeline IT Support
+      SITE_URL: http://localhost:8080
+      SMTP_HOST: ""
+      SMTP_FROM: ${ADMIN_EMAIL}
+      SMTP_TLS: "false"
+    volumes:
+      - osticket_data:/data
+    restart: unless-stopped
+
+volumes:
+  db_data:
+  osticket_data:
