@@ -159,7 +159,7 @@ Search-ADAccount -LockedOut | Select-Object Name, SamAccountName, LockedOut
 Get-WinEvent -FilterHashtable @{LogName='Security'; Id=4740} | Select-Object -First 5
 ```
 
-Five failed login attempts from WRK01 triggered the RTS-Password-Policy GPO lockout threshold (set at 5 attempts). No indicators of unauthorized access — a forgotten password, not a brute-force attempt.
+Five failed login attempts from WRK01 triggered the RTS-Password-Policy GPO lockout threshold (set at 5 attempts). Event ID 4740 is a Windows security log entry that records which machine triggered a lockout — checking it rules out unauthorized access before unlocking. No indicators of unauthorized access — a forgotten password, not a brute-force attempt.
 
 ### Resolution
 
