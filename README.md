@@ -47,3 +47,43 @@ A hands-on IT environment simulating the infrastructure of a 20-person company �
 Ridgeline Technology Services is a simulated IT environment modeled after a 20-person company. Every component — user accounts, device management, cloud identity, file shares, and the help desk — was built and configured from scratch to mirror what a technician manages at a small or mid-size company.
 
 The lab runs a Windows Server 2022 domain controller, two Windows 11 workstations, and a Microsoft 365 tenant. On-premises Active Directory syncs to Entra ID (Microsoft's cloud identity platform) so the same employee credentials work across the office network and cloud services like Teams and OneDrive. All eight support tickets were worked end-to-end and documented to the standard of a professional IT team.
+
+---
+
+## Lab Architecture
+
+The diagram below shows how the on-premises lab (left) connects to Microsoft 365 cloud services (right). DC01 is the main server — it manages user logins, assigns network addresses to devices, and keeps on-premises and cloud accounts synchronized.
+
+```mermaid
+graph TD
+    subgraph Host["Hyper-V Host — Windows 11 Pro"]
+        subgraph LAN["RTS-LAN Internal Switch · 192.168.1.0/24"]
+            DC01["DC01 · 192.168.1.10\nWindows Server 2022\nAD DS · DNS · DHCP · Azure AD Connect"]
+            WRK01["WRK01 · 192.168.1.102\nWindows 11 Pro · atorres"]
+            WRK02["WRK02 · 192.168.1.103\nWindows 11 Pro · jreyes"]
+        end
+        DS["Default Switch — Internet"]
+    end
+
+    subgraph Cloud["M365 Tenant"]
+        Entra["Entra ID\n6 synced users"]
+        Intune["Microsoft Intune\n2 enrolled devices"]
+        M365["Exchange Online\nOneDrive · Teams"]
+    end
+
+    DC01 --- WRK01
+    DC01 --- WRK02
+    DC01 --> DS
+    DC01 -->|"Azure AD Connect\nPassword Hash Sync"| Cloud
+```
+
+| Asset | Hostname | OS | IP | Role |
+|---|---|---|---|---|
+| DC01 | WIN-DTBFF0R4BBQ | Windows Server 2022 | 192.168.1.10 | AD DS, DNS, DHCP, Azure AD Connect |
+| WRK01 | DESKTOP-4PL0V3F | Windows 11 Pro | 192.168.1.102 | Domain workstation — atorres |
+| WRK02 | DESKTOP-BTK0BJ4 | Windows 11 Pro | 192.168.1.103 | Domain workstation — jreyes |
+
+![Entra ID — synced RTS users in M365 admin center](./screenshots/02-azure-ad-users.png)
+*Entra ID — all 6 RTS users synced from on-premises Active Directory to Microsoft 365 via Azure AD Connect*
+
+All VMs run on Hyper-V with an internal switch (`RTS-LAN 192.168.1.0/24`). DC01 has a second network adapter on the Default Switch for internet access. The domain `ridgeline.local` syncs to a Microsoft 365 tenant via Azure AD Connect using Password Hash Sync (a method that keeps passwords synchronized between the office network and the cloud without storing them in plaintext).
