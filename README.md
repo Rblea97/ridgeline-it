@@ -87,3 +87,34 @@ graph TD
 *Entra ID — all 6 RTS users synced from on-premises Active Directory to Microsoft 365 via Azure AD Connect*
 
 All VMs run on Hyper-V with an internal switch (`RTS-LAN 192.168.1.0/24`). DC01 has a second network adapter on the Default Switch for internet access. The domain `ridgeline.local` syncs to a Microsoft 365 tenant via Azure AD Connect using Password Hash Sync (a method that keeps passwords synchronized between the office network and the cloud without storing them in plaintext).
+
+---
+
+## What Was Built
+
+1. **Active Directory** — domain `ridgeline.local`, 3 department OUs (Organizational Units — folders that organize accounts by department: Operations, Finance, IT), 6 users, 4 security groups
+2. **DNS & DHCP** — DNS forwarder to 8.8.8.8, DHCP scope 192.168.1.100–200 on DC01 (DNS translates computer names to network addresses; DHCP automatically assigns those addresses to devices as they connect)
+3. **Group Policy** — RTS-Password-Policy (10-character minimum password, lockout after 5 failed attempts), RTS-Workstation-Policy (Cortana disabled, lock screen settings)
+
+![GPMC — RTS-Password-Policy and RTS-Workstation-Policy](./screenshots/06-gpo-console.png)
+*Group Policy Management Console — security and workstation policies linked to the domain and applied automatically to every computer*
+
+![DHCP — Scope 192.168.1.0 RTS-LAN](./screenshots/07-dhcp-scope.png)
+*DHCP scope active on DC01 — automatically assigns network addresses to workstations as they connect to the lab network*
+
+4. **Azure AD Connect** — Password Hash Sync configured, all 6 users synced from on-premises Active Directory to Entra ID (Microsoft's cloud identity platform for Microsoft 365)
+5. **Microsoft Intune** — both workstations enrolled in MDM (Mobile Device Management), compliance policy (RTS-Workstation-Compliance) and configuration profile (RTS-Workstation-Config) applied
+
+![Intune — RTS-Workstation-Compliance policy](./screenshots/04-compliance-policy.png)
+*Intune compliance policy — automatically checks that every managed device meets minimum security requirements before allowing access*
+
+![Intune — compliance monitor](./screenshots/04b-compliance-status.png)
+*Intune compliance monitor — both VMs flagged noncompliant due to no physical TPM chip in Hyper-V; documented as accepted risk in [TICKET-003](tickets/TICKET-003.md)*
+
+6. **App Deployment** — 7-Zip 24.09 and Notepad++ 8.7.4 deployed to all devices via Intune Win32 app deployment (software pushed automatically to every enrolled computer — no manual installation required)
+
+![Intune — 7-Zip installed on both devices](./screenshots/05-7zip-deployed.png)
+*Intune Win32 app deployment — 7-Zip installed automatically on all enrolled devices without touching either workstation*
+
+7. **PowerShell Automation** — user onboarding, bulk user provisioning from CSV, compliance reporting via Microsoft Graph API, password reset with audit log, and Hyper-V lab provisioning
+8. **Help Desk** — 8 support tickets worked end-to-end across account management, cloud identity, software deployment, and file share permissions; all resolved and documented
