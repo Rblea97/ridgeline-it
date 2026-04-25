@@ -118,3 +118,66 @@ All VMs run on Hyper-V with an internal switch (`RTS-LAN 192.168.1.0/24`). DC01 
 
 7. **PowerShell Automation** — user onboarding, bulk user provisioning from CSV, compliance reporting via Microsoft Graph API, password reset with audit log, and Hyper-V lab provisioning
 8. **Help Desk** — 8 support tickets worked end-to-end across account management, cloud identity, software deployment, and file share permissions; all resolved and documented
+
+---
+
+## Featured Incident: TICKET-004 — Account Lockout
+
+> A walkthrough of one support ticket from submission to closure, showing the full process a help desk technician follows to handle a real incident.
+
+When an employee is locked out of their account, the instinct is to unlock it and move on. This walkthrough shows a more careful process: verify the lockout, investigate the cause, rule out unauthorized access, then resolve — and capture a lesson learned so the team handles it better next time.
+
+### The Incident
+
+Alex Torres submitted a ticket through the IT support portal: *"I've been locked out of my account. I tried logging in several times and now I just get a lockout message."*
+
+The ticket was automatically routed to the IT Support department based on the help topic selected. The technician assessed it as **P2 High** — one user affected, but she had no way to work at all.
+
+### Triage
+
+Before touching anything, the technician evaluated the situation against the priority matrix:
+
+- **Impact:** Medium — single user affected
+- **Urgency:** High — user cannot log in, no workaround available
+- **Result:** P2 High → **Tier 2 SLA — 4-hour response window, 8-hour resolution clock**
+
+The SLA was escalated from the department default (Tier 3) based on urgency — a decision the technician made and documented.
+
+![Ticket 004 detail — resolution notes](./ticketing/screenshots/05-ticket-004-detail.png)
+*TICKET-004 closed — root cause, resolution steps, and lessons learned captured in the ticket before closing*
+
+### Investigation
+
+Rather than immediately unlocking the account, the technician first confirmed the lockout and checked for signs of unauthorized access:
+
+```powershell
+# Confirm the account is locked
+Search-ADAccount -LockedOut | Select-Object Name, SamAccountName, LockedOut
+# Output: atorres — LockedOut: True
+
+# Check Event ID 4740 to find the machine that triggered the lockout
+Get-WinEvent -FilterHashtable @{LogName='Security'; Id=4740} | Select-Object -First 5
+```
+
+Five failed login attempts from WRK01 triggered the RTS-Password-Policy GPO lockout threshold (set at 5 attempts). No indicators of unauthorized access — a forgotten password, not a brute-force attempt.
+
+### Resolution
+
+```powershell
+# Unlock the account
+Unlock-ADAccount -Identity atorres
+
+# Verify the unlock succeeded
+Get-ADUser atorres -Properties LockedOut | Select-Object Name, LockedOut
+# Output: LockedOut: False
+```
+
+User confirmed successful login. Ticket closed within the 8-hour SLA window — **SLA met**.
+
+### Lessons Learned
+
+Captured in the ticket before closing: always check Event ID 4740 to identify the source machine before unlocking — it distinguishes a forgotten password from a brute-force attack attempt. Future recommendation: enable self-service password reset (SSPR) via Entra ID to let users unlock their own accounts, reducing admin overhead for routine lockouts.
+
+Full ticket documentation and the complete osTicket system: [`ticketing/`](ticketing/)
+
+---
