@@ -181,3 +181,57 @@ Captured in the ticket before closing: always check Event ID 4740 to identify th
 Full ticket documentation and the complete osTicket system: [`ticketing/`](ticketing/)
 
 ---
+
+## Scripts
+
+Automation scripts reduce time spent on repetitive tasks — creating accounts, resetting passwords, generating compliance reports — so technicians can focus on real problems. Each script is production-ready with error handling and logging.
+
+| Script | Description |
+|---|---|
+| [`scripts/New-RTSUser.ps1`](scripts/New-RTSUser.ps1) | Bulk AD user creation from CSV with Entra ID sync |
+| [`scripts/Invoke-RTSOnboarding.ps1`](scripts/Invoke-RTSOnboarding.ps1) | End-to-end single user onboarding — AD account, groups, and sync |
+| [`scripts/Reset-RTSUserPassword.ps1`](scripts/Reset-RTSUserPassword.ps1) | Reset AD password with timestamped audit log entry |
+| [`scripts/Get-RTSComplianceReport.ps1`](scripts/Get-RTSComplianceReport.ps1) | Export Intune device compliance report via Microsoft Graph API (OAuth2) |
+| [`scripts/setup/New-RTSLabVMs.ps1`](scripts/setup/New-RTSLabVMs.ps1) | Provision Hyper-V virtual switch and 3 VMs with Gen 2, Secure Boot, and virtual TPM |
+
+![DC01 — password reset audit log entry](./screenshots/08-password-reset-log.png)
+*Password reset audit log on DC01 — every reset is written to a timestamped file by Reset-RTSUserPassword.ps1, creating an auditable record of all account changes*
+
+---
+
+## Documentation
+
+### Standard Operating Procedures
+
+Step-by-step reference guides for common IT tasks — the kind of documentation a new technician follows on their first week and a senior tech updates after every process change.
+
+| SOP | Description |
+|---|---|
+| [`docs/sops/new-user-onboarding.md`](docs/sops/new-user-onboarding.md) | End-to-end new employee setup — AD account, Entra ID sync, M365 license assignment |
+| [`docs/sops/device-enrollment.md`](docs/sops/device-enrollment.md) | Enrolling a Windows 11 workstation into Intune MDM management |
+| [`docs/sops/software-deployment.md`](docs/sops/software-deployment.md) | Packaging and deploying a Win32 application through Intune |
+
+### Knowledge Base
+
+Documented solutions to the most common support issues — written so any technician can resolve them without escalation.
+
+| Article | Topic |
+|---|---|
+| [`KB-001`](docs/kb/KB-001-account-lockout.md) | Diagnosing and resolving locked Active Directory accounts |
+| [`KB-002`](docs/kb/KB-002-new-user-onboarding.md) | New employee account setup reference |
+| [`KB-003`](docs/kb/KB-003-software-request.md) | Handling software requests via Intune deployment |
+| [`KB-004`](docs/kb/KB-004-onedrive-sync-error.md) | Resolving OneDrive invalid filename sync errors |
+| [`KB-005`](docs/kb/KB-005-file-share-permissions.md) | Granting and revoking access to SMB file shares |
+
+### Support Tickets
+
+| Ticket | Summary | Status |
+|---|---|---|
+| [TICKET-001](tickets/TICKET-001.md) | DC hostname not renamed post-promotion | Closed — accepted |
+| [TICKET-002](tickets/TICKET-002.md) | Azure AD Cloud Sync blocked by network — switched to AD Connect | Closed — resolved |
+| [TICKET-003](tickets/TICKET-003.md) | BitLocker non-compliance on lab VMs (no TPM) | Closed — accepted risk |
+| [TICKET-004](tickets/TICKET-004.md) | Account lockout — atorres locked after 5 failed login attempts | Closed — resolved |
+| [TICKET-005](tickets/TICKET-005.md) | New employee onboarding — Jamie Chen, Finance | Closed — resolved |
+| [TICKET-006](tickets/TICKET-006.md) | Software request — Notepad++ deployment via Intune | Closed — resolved |
+| [TICKET-007](tickets/TICKET-007.md) | OneDrive sync error — invalid filename characters | Closed — resolved |
+| [TICKET-008](tickets/TICKET-008.md) | File share access denied — Finance$ SMB share | Closed — resolved |
