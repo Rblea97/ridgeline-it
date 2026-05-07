@@ -5,7 +5,8 @@
 **Reported by:** Alex Torres (atorres)  
 **Assigned to:** Richard Blea (Lab Admin)  
 **Status:** Closed — Resolved  
-**Priority:** Medium  
+**Priority:** P2 High  
+**SLA:** Tier 2 — 4 hr response / 8 hr resolution
 **Category:** Account Management / Active Directory
 
 ---
@@ -13,6 +14,19 @@
 ## Summary
 
 User Alex Torres (atorres) was locked out of their account on WRK01 after entering an incorrect password multiple times. The user could not log in and received a lockout message on the Windows sign-in screen.
+
+---
+
+## Triage / Priority Assessment
+
+| Dimension | Assessment |
+|---|---|
+| Impact | Medium — single user affected |
+| Urgency | High — user cannot log in, no workaround available |
+| Calculated priority | P2 High |
+| SLA tier | Tier 2 — 4 hr response / 8 hr resolution |
+
+Escalated from department default (Tier 3) based on urgency. Decision documented at triage. See [`ticketing/docs/03-priority-matrix.md`](../ticketing/docs/03-priority-matrix.md) for the full matrix.
 
 ---
 
