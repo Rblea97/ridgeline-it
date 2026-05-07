@@ -15,6 +15,21 @@ A hands-on IT environment simulating the infrastructure of a 20-person company �
 
 ---
 
+## What This Demonstrates
+
+Hands-on competency in the day-to-day work of an entry-level IT support role, documented across a simulated 20-person business environment:
+
+- **Service desk operations** — 8 support tickets worked end-to-end through a configured osTicket instance, with SLA tiers, priority matrix, and full lifecycle from triage to closure.
+- **User account management** — new-employee onboarding, password resets with audit logging, account lockout resolution, group membership changes.
+- **Endpoint management** — Windows 11 workstations enrolled in Microsoft Intune, compliance policies applied, software deployed remotely.
+- **Cloud identity** — Microsoft 365 tenant with 6 users synced from on-premises Active Directory via Azure AD Connect.
+- **File share permissions** — SMB share investigation including a Deny-overrides-Allow root cause analysis.
+- **Documentation & automation** — 3 SOPs, 5 KB articles, asset register, and 5 PowerShell automation scripts.
+
+Featured ticket walkthroughs and the help desk system are below.
+
+---
+
 ## Skills Demonstrated
 
 | Skill | Proof |
