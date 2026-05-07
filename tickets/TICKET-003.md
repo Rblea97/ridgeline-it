@@ -21,9 +21,9 @@ After enrolling WRK01 and WRK02 in Microsoft Intune, both devices immediately ap
 | Field | Value |
 |-------|-------|
 | Affected Device 1 | WRK01 — DESKTOP-4PL0V3F, IP 192.168.1.102 |
-| Affected User 1 | atorres (Alex Torres) — atorres@ridgeline-it.onmicrosoft.com |
+| Affected User 1 | atorres (Alex Torres) — atorres@ridgelinets.onmicrosoft.com |
 | Affected Device 2 | WRK02 — DESKTOP-BTK0BJ4, IP 192.168.1.103 |
-| Affected User 2 | jreyes (Jose Reyes) — jreyes@ridgeline-it.onmicrosoft.com |
+| Affected User 2 | jreyes (Jose Reyes) — jreyes@ridgelinets.onmicrosoft.com |
 | OS | Windows 11 Pro |
 | VM Type | Hyper-V Generation 1 (no virtual TPM) |
 | Compliance Policy | RTS-Workstation-Compliance |

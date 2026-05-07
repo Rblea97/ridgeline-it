@@ -22,7 +22,7 @@ User Alex Torres reported that a file saved to their OneDrive for Business folde
 |-------|-------|
 | Affected User | atorres (Alex Torres) |
 | Device | WRK01 (DESKTOP-4PL0V3F), IP 192.168.1.102 |
-| Service | OneDrive for Business (ridgeline-it.onmicrosoft.com) |
+| Service | OneDrive for Business (ridgelinets.onmicrosoft.com) |
 | Problematic File | `Budget<Final>.xlsx` |
 | OneDrive Client Version | Confirmed syncing — version visible in OneDrive Settings → About |
 
@@ -74,7 +74,7 @@ Budget<Final>.xlsx  →  Budget-Final.xlsx
 
 ### Step 3 — Verify sync
 
-After renaming, OneDrive automatically retried the upload. The error badge cleared within 30–60 seconds and the file appeared in OneDrive on the web at `https://ridgeline-it-my.sharepoint.com`.
+After renaming, OneDrive automatically retried the upload. The error badge cleared within 30–60 seconds and the file appeared in OneDrive on the web (accessible from `office.com → OneDrive`).
 
 ---
 
