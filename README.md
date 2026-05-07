@@ -136,6 +136,29 @@ All VMs run on Hyper-V with an internal switch (`RTS-LAN 192.168.1.0/24`). DC01 
 
 ---
 
+## The Service Desk
+
+The lab includes a fully configured osTicket help desk that mirrors how an internal IT team intakes, triages, and resolves user-reported issues.
+
+- **Departments:** IT Support (Tier 1), Infrastructure (Tier 2), Security (Tier 2)
+- **SLA tiers:** Tier 1 Critical · Tier 2 High · Tier 3 Medium · Tier 4 Low
+- **Priority matrix:** four-by-four impact/urgency grid documented in [`ticketing/docs/03-priority-matrix.md`](ticketing/docs/03-priority-matrix.md)
+
+| ID | Subject | Priority | SLA | Status |
+|----|---------|----------|-----|--------|
+| 001 | DC hostname not renamed post-promotion | P4 Low | Tier 4 | Closed — accepted |
+| 002 | Azure AD Cloud Sync agent disconnected | P2 High | Tier 2 | Closed — resolved |
+| 003 | BitLocker compliance flag on lab VMs | P4 Low | Tier 4 | Closed — accepted risk |
+| 004 | Account lockout — atorres on WRK01 | P2 High | Tier 2 | Closed — resolved |
+| 005 | New employee onboarding — Jamie Chen | P3 Medium | Tier 3 | Closed — resolved |
+| 006 | Software request — Notepad++ via Intune | P4 Low | Tier 4 | Closed — resolved |
+| 007 | OneDrive sync error — invalid filename | P4 Low | Tier 4 | Closed — resolved |
+| 008 | File share access denied — Finance$ | P3 Medium | Tier 3 | Closed — resolved |
+
+Three of these are walked through below as featured incidents. Full lifecycle documentation: [`ticketing/`](ticketing/) · all 8 ticket files: [`tickets/`](tickets/)
+
+---
+
 ## Featured Incident: TICKET-004 — Account Lockout
 
 > A walkthrough of one support ticket from submission to closure, showing the full process a help desk technician follows to handle a real incident.
@@ -238,15 +261,3 @@ Documented solutions to the most common support issues — written so any techni
 | [`KB-004`](docs/kb/KB-004-onedrive-sync-error.md) | Resolving OneDrive invalid filename sync errors |
 | [`KB-005`](docs/kb/KB-005-file-share-permissions.md) | Granting and revoking access to SMB file shares |
 
-### Support Tickets
-
-| Ticket | Summary | Status |
-|---|---|---|
-| [TICKET-001](tickets/TICKET-001.md) | DC hostname not renamed post-promotion | Closed — accepted |
-| [TICKET-002](tickets/TICKET-002.md) | Azure AD Cloud Sync blocked by network — switched to AD Connect | Closed — resolved |
-| [TICKET-003](tickets/TICKET-003.md) | BitLocker non-compliance on lab VMs (no TPM) | Closed — accepted risk |
-| [TICKET-004](tickets/TICKET-004.md) | Account lockout — atorres locked after 5 failed login attempts | Closed — resolved |
-| [TICKET-005](tickets/TICKET-005.md) | New employee onboarding — Jamie Chen, Finance | Closed — resolved |
-| [TICKET-006](tickets/TICKET-006.md) | Software request — Notepad++ deployment via Intune | Closed — resolved |
-| [TICKET-007](tickets/TICKET-007.md) | OneDrive sync error — invalid filename characters | Closed — resolved |
-| [TICKET-008](tickets/TICKET-008.md) | File share access denied — Finance$ SMB share | Closed — resolved |
