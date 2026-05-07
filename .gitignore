@@ -21,3 +21,13 @@ desktop.ini
 # ISO and disk images
 *.iso
 *.img
+
+# Local planning / agent artifacts (not for public consumption)
+Plans/
+
+# Screenshot archives (sources are tracked as PNGs)
+screenshots.zip
+ticketing/screenshots.zip
+
+# Git worktrees
+.worktrees/
