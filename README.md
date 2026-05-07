@@ -278,6 +278,71 @@ Full ticket documentation: [`tickets/TICKET-005.md`](tickets/TICKET-005.md)
 
 ---
 
+### TICKET-008 — File Share Access Denied (Finance$)
+
+> A walkthrough of an SMB file share access investigation, including a classic Windows ACL gotcha that's easy to miss.
+
+#### The Incident
+
+Alex Torres (Operations) reported "Access Denied" when trying to open `\\WIN-DTBFF0R4BBQ\Finance$` for a cross-department project.
+
+#### Triage
+
+- **Impact:** Low — single user blocked from a single share
+- **Urgency:** Medium — cross-department project work blocked
+- **Result:** P3 Medium → Tier 3 SLA
+
+#### Investigation
+
+```powershell
+# Check share-level permissions
+Get-SmbShareAccess -Name 'Finance$'
+
+# Check NTFS-level permissions on the underlying folder
+(Get-Acl 'C:\Shares\Finance').Access |
+    Select-Object IdentityReference, FileSystemRights, AccessControlType
+```
+
+Two findings:
+1. The Finance$ share grants access to **Finance Users** only. Alex Torres was in **Operations Users**, not Finance Users — that alone explains the denial.
+2. The share-level ACL also contained an explicit **Deny — Everyone** ACE from a `New-SmbShare -NoAccess 'Everyone'` mistake during initial setup.
+
+The second finding is the trap: in Windows access control, **Deny ACEs always override Allow ACEs**. Even if Alex were added to Finance Users, the explicit Deny at the share level would still block her.
+
+#### Resolution
+
+```powershell
+# Add user to the correct department group
+Add-ADGroupMember -Identity 'Finance Users' -Members 'atorres'
+
+# Rebuild the share without the explicit Deny ACE
+Remove-SmbShare -Name 'Finance$' -Force
+New-SmbShare -Name 'Finance$' `
+    -Path 'C:\Shares\Finance' `
+    -FullAccess 'RIDGELINE\Finance Users','BUILTIN\Administrators'
+```
+
+#### Verification
+
+User ran `klist purge` to clear the cached Kerberos ticket, then logged off and back on to obtain a new token reflecting the Finance Users group membership.
+
+```powershell
+# Confirm group membership took effect after re-logon
+whoami /groups | findstr "Finance"
+```
+
+Output included `RIDGELINE\Finance Users`. Access to `\\WIN-DTBFF0R4BBQ\Finance$` confirmed working.
+
+#### Lessons Learned
+
+- **Deny ACEs override Allow ACEs** in Windows access control. Avoid `-NoAccess` at the share level when NTFS permissions are already restrictive — it creates a trap that no amount of group-membership work can fix.
+- Group membership changes require a new logon session. `gpupdate /force` alone is not sufficient because Kerberos tickets are issued at logon.
+- In production, a ticketing/approval workflow should gate group additions to department shares — the change above was correct here, but in a real org it would need manager approval first.
+
+Full ticket documentation: [`tickets/TICKET-008.md`](tickets/TICKET-008.md)
+
+---
+
 ## Scripts
 
 Automation scripts reduce time spent on repetitive tasks — creating accounts, resetting passwords, generating compliance reports — so technicians can focus on real problems. Each script is production-ready with error handling and logging.
