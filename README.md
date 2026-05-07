@@ -159,19 +159,21 @@ Three of these are walked through below as featured incidents. Full lifecycle do
 
 ---
 
-## Featured Incident: TICKET-004 — Account Lockout
+## Featured Incidents
+
+### TICKET-004 — Account Lockout
 
 > A walkthrough of one support ticket from submission to closure, showing the full process a help desk technician follows to handle a real incident.
 
 When an employee is locked out of their account, the instinct is to unlock it and move on. This walkthrough shows a more careful process: verify the lockout, investigate the cause, rule out unauthorized access, then resolve — and capture a lesson learned so the team handles it better next time.
 
-### The Incident
+#### The Incident
 
 Alex Torres submitted a ticket through the IT support portal: *"I've been locked out of my account. I tried logging in several times and now I just get a lockout message."*
 
 The ticket was automatically routed to the IT Support department based on the help topic selected. The technician assessed it as **P2 High** — one user affected, but she had no way to work at all.
 
-### Triage
+#### Triage
 
 Before touching anything, the technician evaluated the situation against the priority matrix:
 
@@ -184,7 +186,7 @@ The SLA was escalated from the department default (Tier 3) based on urgency — 
 ![Ticket 004 detail — resolution notes](./ticketing/screenshots/05-ticket-004-detail.png)
 *TICKET-004 closed — root cause, resolution steps, and lessons learned captured in the ticket before closing*
 
-### Investigation
+#### Investigation
 
 Rather than immediately unlocking the account, the technician first confirmed the lockout and checked for signs of unauthorized access:
 
@@ -199,7 +201,7 @@ Get-WinEvent -FilterHashtable @{LogName='Security'; Id=4740} | Select-Object -Fi
 
 Five failed login attempts from WRK01 triggered the RTS-Password-Policy GPO lockout threshold (set at 5 attempts). Event ID 4740 is a Windows security log entry that records which machine triggered a lockout — checking it rules out unauthorized access before unlocking. No indicators of unauthorized access — a forgotten password, not a brute-force attempt.
 
-### Resolution
+#### Resolution
 
 ```powershell
 # Unlock the account
@@ -212,11 +214,67 @@ Get-ADUser atorres -Properties LockedOut | Select-Object Name, LockedOut
 
 User confirmed successful login. Ticket closed within the 8-hour SLA window — **SLA met**.
 
-### Lessons Learned
+#### Lessons Learned
 
 Captured in the ticket before closing: always check Event ID 4740 to identify the source machine before unlocking — it distinguishes a forgotten password from a brute-force attack attempt. Future recommendation: enable self-service password reset (SSPR) via Entra ID to let users unlock their own accounts, reducing admin overhead for routine lockouts.
 
 Full ticket documentation and the complete osTicket system: [`ticketing/`](ticketing/)
+
+---
+
+### TICKET-005 — New Employee Onboarding (Jamie Chen, Finance)
+
+> A walkthrough of provisioning a new hire end-to-end — Active Directory account, security groups, cloud identity sync, and license assignment.
+
+#### The Request
+
+HR submitted a ticket: new hire **Jamie Chen** starting next week as a Financial Analyst. Standard onboarding — needs an AD account, Finance department access, and a Microsoft 365 license.
+
+#### Triage
+
+- **Impact:** Low — no current users blocked; future user pending start date
+- **Urgency:** Medium — onboarding has a target start date
+- **Result:** P3 Medium → Tier 3 SLA — 8-hour response, 24-hour resolution
+
+Routed to IT Support per department default. No escalation needed.
+
+#### Investigation
+
+Verified domain password policy and OU structure before running the onboarding script:
+
+```powershell
+# Confirm OU exists
+Get-ADOrganizationalUnit -Filter "Name -eq 'Finance'" -SearchBase "OU=RTS Users,DC=ridgeline,DC=local"
+
+# Confirm domain password policy
+Get-ADDefaultDomainPasswordPolicy | Select-Object MinPasswordLength, ComplexityEnabled
+```
+
+Output: minimum length **10 characters**, complexity enabled.
+
+#### Resolution
+
+```powershell
+.\Invoke-RTSOnboarding.ps1 -FirstName Jamie -LastName Chen -Department Finance -JobTitle "Financial Analyst"
+```
+
+The script created the AD account in `OU=Finance,OU=RTS Users,DC=ridgeline,DC=local`, added Jamie to **All Staff** and **Finance Users** security groups, set UPN to `jchen@ridgelinets.onmicrosoft.com`, and triggered an Azure AD Connect delta sync. Microsoft 365 E5 Developer license assigned in `admin.microsoft.com` after the user appeared in the cloud directory (~3 minutes after sync).
+
+#### Verification
+
+```powershell
+# Confirm account is enabled and group membership is correct
+Get-ADUser jchen -Properties Enabled, MemberOf | Select-Object Name, Enabled
+Get-ADPrincipalGroupMembership jchen | Select-Object Name
+```
+
+Output: `Enabled: True`. Groups: **All Staff**, **Finance Users**, **Domain Users**.
+
+#### Lessons Learned
+
+The first run of the onboarding script produced a disabled account because the script's default temporary password (9 characters) did not meet the domain password policy minimum of 10 characters. `New-ADUser` accepted the call but flagged the account disabled. Fix: validate script defaults against `Get-ADDefaultDomainPasswordPolicy` *before* deployment, not after a failed run. The script default has been replaced with a generated cryptographically-random temp password to remove this class of bug entirely.
+
+Full ticket documentation: [`tickets/TICKET-005.md`](tickets/TICKET-005.md)
 
 ---
 
