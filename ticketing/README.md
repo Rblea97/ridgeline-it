@@ -2,6 +2,10 @@
 
 This directory contains a fully configured osTicket instance that mirrors the incident management workflow used in the Ridgeline home lab.
 
+## How This Fits Into The Lab
+
+This ticketing system is the operations-side counterpart to the rest of the lab. The 8 support incidents documented in [`../tickets/`](../tickets/) were intaken, triaged, and worked through this osTicket instance. The root [README](../README.md#the-service-desk) summarizes the service desk; this directory is the configuration and infrastructure detail.
+
 ## What's Here
 
 | Path | Contents |
@@ -58,3 +62,9 @@ All 8 incidents from the home lab are entered with full ITSM classification:
 | 008 | Finance$ Share Access Denied | P3 Medium | Tier 3 |
 
 See `docs/03-priority-matrix.md` for how priorities were assigned.
+
+## Sample Tickets Worked Through This System
+
+All 8 ticket files: [`../tickets/`](../tickets/) (or see the [tickets index](../tickets/README.md) for a quick-reference table).
+
+Three featured walkthroughs in the root README: account lockout, new employee onboarding, file share access denied. These are the most pedagogically rich examples of priority matrix application, account management, and Windows access control depth.
