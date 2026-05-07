@@ -1,4 +1,4 @@
-# Ridgeline IT Support — Ticketing System
+# Ridgeline Technology Services — Ticketing System
 
 This directory contains a fully configured osTicket instance that mirrors the incident management workflow used in the Ridgeline home lab.
 
