@@ -30,6 +30,14 @@
     Requires: ActiveDirectory module, ADSync module
     Run as: Domain Admin on DC01 (192.168.1.10)
     Valid departments: Operations, Finance, IT
+
+    Lab-only values used in this script:
+      - $TenantDomain = "ridgelinets.onmicrosoft.com"  (RTS lab M365 tenant)
+      - OU paths under "OU=RTS Users,DC=ridgeline,DC=local"  (RTS lab AD)
+      - Security group names: All Staff, Operations Users, Finance Users, IT Staff
+
+    For production use, parameterize $TenantDomain, OU paths, and group
+    names; do not assume the RTS-lab values.
 #>
 
 #Requires -Modules ActiveDirectory, ADSync

@@ -29,6 +29,12 @@
 .NOTES
     Must be run on DC01 (192.168.1.10) as a domain administrator.
     The log directory is created automatically if it does not exist.
+
+    Lab-only values used in this script:
+      - Default $LogPath = 'C:\IT\Logs\password-resets.log'  (RTS lab convention)
+
+    For production use, parameterize the log path or route to a centralized
+    SIEM/audit log destination.
 #>
 
 #Requires -Modules ActiveDirectory
