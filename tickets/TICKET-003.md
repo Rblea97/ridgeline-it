@@ -5,7 +5,8 @@
 **Reported by:** Intune Compliance Policy
 **Assigned to:** Richard Blea (Lab Admin)
 **Status:** Closed — Accepted Risk (Lab Environment)
-**Priority:** Low
+**Priority:** P4 Low
+**SLA:** Tier 4 — 24 hr response / 72 hr resolution
 **Category:** Compliance / Device Management
 
 ---

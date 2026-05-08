@@ -4,7 +4,8 @@
 **Date:** 2026-04-18
 **Technician:** Richard Blea
 **Category:** Infrastructure / Configuration
-**Priority:** Low
+**Priority:** P4 Low
+**SLA:** Tier 4 — 24 hr response / 72 hr resolution
 **Status:** Closed — Accepted As-Is
 
 ---
