@@ -4,7 +4,8 @@
 **Date:** 2026-04-18
 **Technician:** Richard Blea
 **Category:** Cloud Identity / Azure AD Sync
-**Priority:** Medium
+**Priority:** P2 High
+**SLA:** Tier 2 — 4 hr response / 8 hr resolution
 **Status:** Closed — Resolved by Switching to Azure AD Connect
 
 ---
@@ -12,6 +13,19 @@
 ## Summary
 
 Microsoft Azure AD Cloud Sync agent was installed on DC01 as the initial sync method but could not establish a connection. The agent showed **Disconnected** in the Azure AD portal and could not be brought online despite multiple reinstall attempts. The issue was resolved by replacing Cloud Sync with Azure AD Connect (Entra Connect Sync).
+
+---
+
+## Triage / Priority Assessment
+
+| Dimension | Assessment |
+|---|---|
+| Impact | High — sync infrastructure failure affects all 6 users' cloud identity |
+| Urgency | Medium — on-prem authentication still works; cloud services blocked until sync restored |
+| Calculated priority | P2 High |
+| SLA tier | Tier 2 — 4 hr response / 8 hr resolution |
+
+Reclassified from initial Medium label after applying the priority matrix objectively. See [`ticketing/docs/03-priority-matrix.md`](../ticketing/docs/03-priority-matrix.md) for the full matrix and the rationale behind reclassifications.
 
 ---
 

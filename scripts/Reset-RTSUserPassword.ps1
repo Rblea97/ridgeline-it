@@ -11,7 +11,10 @@
     The sAMAccountName of the user whose password will be reset.
 
 .PARAMETER NewPassword
-    The new temporary password. Defaults to 'Welcome1!2'.
+    Optional [SecureString] new password for the account. If not provided, a
+    14-character cryptographically random temp password is generated and
+    printed to the console for secure communication. The user is forced to
+    change it at next logon.
 
 .PARAMETER LogPath
     Path to the log file. Defaults to C:\IT\Logs\password-resets.log.
@@ -20,11 +23,18 @@
     .\Reset-RTSUserPassword.ps1 -SamAccountName atorres
 
 .EXAMPLE
-    .\Reset-RTSUserPassword.ps1 -SamAccountName jreyes -NewPassword 'Temp2026!'
+    $secure = Read-Host -AsSecureString "Enter new password"
+    .\Reset-RTSUserPassword.ps1 -SamAccountName jreyes -NewPassword $secure
 
 .NOTES
     Must be run on DC01 (192.168.1.10) as a domain administrator.
     The log directory is created automatically if it does not exist.
+
+    Lab-only values used in this script:
+      - Default $LogPath = 'C:\IT\Logs\password-resets.log'  (RTS lab convention)
+
+    For production use, parameterize the log path or route to a centralized
+    SIEM/audit log destination.
 #>
 
 #Requires -Modules ActiveDirectory
@@ -34,13 +44,24 @@ param(
     [Parameter(Mandatory)]
     [string]$SamAccountName,
 
-    [string]$NewPassword = 'Welcome1!2',
+    [Parameter()]
+    [SecureString]$NewPassword,
 
     [string]$LogPath = 'C:\IT\Logs\password-resets.log'
 )
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
+
+# If no password supplied, generate a cryptographically random 14-char temp password.
+# Caller may also pass -NewPassword <SecureString> to set a specific value.
+if (-not $NewPassword) {
+    Add-Type -AssemblyName 'System.Web'
+    $generated = [System.Web.Security.Membership]::GeneratePassword(14, 4)
+    $NewPassword = ConvertTo-SecureString $generated -AsPlainText -Force
+    Write-Host "Generated temporary password: $generated" -ForegroundColor Yellow
+    Write-Host "Communicate to user via secure channel. User must change at first logon." -ForegroundColor Yellow
+}
 
 # --- Validate user exists ---
 try {
@@ -54,8 +75,7 @@ catch {
 
 # --- Reset password ---
 try {
-    $securePassword = ConvertTo-SecureString $NewPassword -AsPlainText -Force
-    Set-ADAccountPassword -Identity $SamAccountName -NewPassword $securePassword -Reset -ErrorAction Stop
+    Set-ADAccountPassword -Identity $SamAccountName -NewPassword $NewPassword -Reset -ErrorAction Stop
     Write-Host 'Password reset.'
 }
 catch {

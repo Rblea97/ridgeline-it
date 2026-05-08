@@ -5,7 +5,8 @@
 **Reported by:** Alex Torres (atorres)  
 **Assigned to:** Richard Blea (Lab Admin)  
 **Status:** Closed — Resolved  
-**Priority:** Medium  
+**Priority:** P3 Medium  
+**SLA:** Tier 3 — 8 hr response / 24 hr resolution
 **Category:** File Share / Permissions
 
 ---
@@ -13,6 +14,19 @@
 ## Summary
 
 User Alex Torres (Operations) requested access to the Finance department file share `\\WIN-DTBFF0R4BBQ\Finance$` for a cross-department project. The user received an "Access Denied" error when attempting to connect. Access was granted by adding the user to the Finance Users security group.
+
+---
+
+## Triage / Priority Assessment
+
+| Dimension | Assessment |
+|---|---|
+| Impact | Low — single user blocked from a single share |
+| Urgency | Medium — cross-department project work blocked |
+| Calculated priority | P3 Medium |
+| SLA tier | Tier 3 — 8 hr response / 24 hr resolution |
+
+Routed to IT Support per department default.
 
 ---
 
@@ -67,7 +81,7 @@ Remove-SmbShare -Name 'Finance$' -Force
 New-SmbShare -Name 'Finance$' -Path 'C:\Shares\Finance' -FullAccess 'RIDGELINE\Finance Users','BUILTIN\Administrators'
 ```
 
-### Step 4 — User re-authenticates
+### Step 4 — Verification (user re-authenticates and access confirmed)
 
 User ran `klist purge` to clear the cached Kerberos ticket, then logged off and back on to obtain a new token reflecting the Finance Users group membership. Access to `\\WIN-DTBFF0R4BBQ\Finance$` confirmed successful.
 

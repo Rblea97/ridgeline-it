@@ -11,8 +11,10 @@
     Path to the input CSV file.
 
 .PARAMETER DefaultPassword
-    Temporary password assigned to all new accounts. Users must change it at
-    first logon. Defaults to 'Welcome1!2'.
+    Optional [SecureString] temporary password applied to all new accounts.
+    If not provided, a 14-character cryptographically random temp password is
+    generated once and applied to every account in this batch (printed to the
+    console for secure communication). Users must change at first logon.
 
 .EXAMPLE
     .\New-RTSUser.ps1 -CsvPath ".\new-hires.csv"
@@ -28,6 +30,14 @@
     Requires: ActiveDirectory module, ADSync module
     Run as: Domain Admin on DC01 (192.168.1.10)
     Valid departments: Operations, Finance, IT
+
+    Lab-only values used in this script:
+      - $TenantDomain = "ridgelinets.onmicrosoft.com"  (RTS lab M365 tenant)
+      - OU paths under "OU=RTS Users,DC=ridgeline,DC=local"  (RTS lab AD)
+      - Security group names: All Staff, Operations Users, Finance Users, IT Staff
+
+    For production use, parameterize $TenantDomain, OU paths, and group
+    names; do not assume the RTS-lab values.
 #>
 
 #Requires -Modules ActiveDirectory, ADSync
@@ -38,8 +48,18 @@ param (
     [string]$CsvPath,
 
     [Parameter()]
-    [SecureString]$DefaultPassword = (ConvertTo-SecureString "Welcome1!2" -AsPlainText -Force)
+    [SecureString]$DefaultPassword
 )
+
+# If no password supplied, generate a cryptographically random 14-char temp password.
+# Caller may also pass -DefaultPassword <SecureString> to set a specific value.
+if (-not $DefaultPassword) {
+    Add-Type -AssemblyName 'System.Web'
+    $generated = [System.Web.Security.Membership]::GeneratePassword(14, 4)
+    $DefaultPassword = ConvertTo-SecureString $generated -AsPlainText -Force
+    Write-Host "Generated temporary password: $generated (applied to all created accounts)" -ForegroundColor Yellow
+    Write-Host "Communicate to users via secure channel. Users must change at first logon." -ForegroundColor Yellow
+}
 
 $TenantDomain    = "ridgelinets.onmicrosoft.com"
 

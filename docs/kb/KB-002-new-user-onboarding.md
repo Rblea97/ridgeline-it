@@ -41,7 +41,7 @@ The script will:
 - Set the username (first initial + last name, e.g., `jchen` for Jamie Chen)
 - Set UPN to `<username>@ridgelinets.onmicrosoft.com`
 - Assign the user to **All Staff** and the department security group
-- Set a temporary password (`Welcome1!2`) with force-change at first logon
+- Set a temporary password ([generated temp password]) with force-change at first logon
 - Trigger an Azure AD Connect delta sync
 
 ### Step 2 — Assign M365 License
@@ -61,7 +61,7 @@ Provide the user with their credentials via a secure channel:
 | Field | Value |
 |-------|-------|
 | Username | `<username>@ridgelinets.onmicrosoft.com` |
-| Temp Password | `Welcome1!2` |
+| Temp Password | [redacted — communicated via secure channel] |
 | First login | User will be prompted to set a new password |
 
 **Example for Jamie Chen:** username is `jchen@ridgelinets.onmicrosoft.com`

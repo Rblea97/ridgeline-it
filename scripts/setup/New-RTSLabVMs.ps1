@@ -30,8 +30,15 @@
     Requires: Hyper-V PowerShell module
     Run as: Local Administrator on the Hyper-V host
 
-    After running this script, install the operating systems on each VM via Hyper-V Manager,
-    then run the AD configuration scripts from the repo.
+    Lab-only values used in this script:
+      - VM names: RTS-DC01, RTS-WRK01, RTS-WRK02
+      - Switch name: RTS-LAN
+      - Default ISO file names (Windows Server 2022 Eval, Windows 11 25H2)
+
+    For production use, parameterize VM names, switch name, and ISO paths.
+
+    After running this script, install the operating systems on each VM via
+    Hyper-V Manager, then run the AD configuration scripts from the repo.
 #>
 
 [CmdletBinding()]

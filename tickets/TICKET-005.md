@@ -5,7 +5,8 @@
 **Reported by:** HR / Manager
 **Assigned to:** Richard Blea (Lab Admin)
 **Status:** Closed — Resolved
-**Priority:** Medium
+**Priority:** P3 Medium
+**SLA:** Tier 3 — 8 hr response / 24 hr resolution
 **Category:** Account Management / Onboarding
 
 ---
@@ -13,6 +14,19 @@
 ## Summary
 
 New employee Jamie Chen joined the Finance department as a Financial Analyst. An Active Directory account, security group memberships, and Microsoft 365 license were provisioned using the RTS onboarding script and admin portal.
+
+---
+
+## Triage / Priority Assessment
+
+| Dimension | Assessment |
+|---|---|
+| Impact | Low — no current users blocked; future user pending start date |
+| Urgency | Medium — onboarding has a target start date |
+| Calculated priority | P3 Medium |
+| SLA tier | Tier 3 — 8 hr response / 24 hr resolution |
+
+Routed to IT Support per department default. No escalation needed.
 
 ---
 
@@ -33,7 +47,7 @@ New employee Jamie Chen joined the Finance department as a Financial Analyst. An
 
 ## Root Cause
 
-Not applicable — this is a provisioning request, not an incident. A script defect was encountered during execution: the onboarding script's default temporary password (`Welcome1!`, 9 characters) did not meet the domain password policy minimum length of 10 characters, causing the `New-ADUser` call to create the account in a disabled state. See Notes section for details.
+Not applicable — this is a provisioning request, not an incident. A script defect was encountered during execution: the onboarding script's default temporary password (9 characters) did not meet the domain password policy minimum length of 10 characters, causing the `New-ADUser` call to create the account in a disabled state. See Notes section for details.
 
 ---
 
@@ -49,14 +63,14 @@ Not applicable — this is a provisioning request, not an incident. A script def
 - AD account `jchen` created in `OU=Finance,OU=RTS Users,DC=ridgeline,DC=local`
 - Added to security groups: **All Staff**, **Finance Users**
 - UPN set to `jchen@ridgelinets.onmicrosoft.com`
-- Temporary password: `Welcome1!2` (user must change at first logon)
+- Temporary password: [redacted — communicated to user via secure channel]
 - Azure AD Connect delta sync triggered (Result: Success)
 
 ### Step 2 — Assign M365 License
 
 Navigated to **admin.microsoft.com → Users → Active users → Jamie Chen → Licenses and apps** and assigned **Microsoft 365 E5 Developer SKU V2**.
 
-### Step 3 — Verify AD Account and Group Membership
+### Step 3 — Verification (AD account and group membership)
 
 ```powershell
 # Confirm account exists and is enabled
@@ -73,14 +87,14 @@ Temporary credentials communicated to user via secure channel:
 | Field | Value |
 |-------|-------|
 | Username | jchen@ridgelinets.onmicrosoft.com |
-| Temp Password | Welcome1!2 |
+| Temp Password | [redacted — communicated via secure channel] |
 | First Login | User will be prompted to set a new password |
 
 ---
 
 ## Notes
 
-The initial script run failed to enable the account because the default password `Welcome1!` (9 characters) did not meet the domain password policy minimum of 10 characters. The `New-ADUser` cmdlet created the account but left it disabled. The script default was updated to `Welcome1!2` (10 characters), the account was manually enabled with `Enable-ADAccount -Identity jchen`, and the password was reset with `Set-ADAccountPassword`. The script has been fixed for future runs.
+The initial script run failed to enable the account because the script's default temporary password (9 characters) did not meet the domain password policy minimum length of 10 characters. The `New-ADUser` cmdlet created the account but left it disabled. The default was extended to 10 characters, the account was manually enabled with `Enable-ADAccount -Identity jchen`, and the password was reset with `Set-ADAccountPassword`. The script has since been refactored to generate a cryptographically-random temp password at runtime instead of using a hardcoded default — preventing this class of bug entirely.
 
 ---
 

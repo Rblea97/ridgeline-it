@@ -21,8 +21,10 @@
     Employee job title.
 
 .PARAMETER DefaultPassword
-    Temporary password assigned to the new account. The user must change it at
-    first logon. Defaults to 'Welcome1!2'.
+    Optional [SecureString] temporary password for the new account. If not
+    provided, a 14-character cryptographically random temp password is
+    generated at runtime and printed to the console for secure communication
+    to the user. The user must change it at first logon.
 
 .EXAMPLE
     .\Invoke-RTSOnboarding.ps1 -FirstName "Jamie" -LastName "Chen" -Department "Finance" -JobTitle "Accountant"
@@ -33,6 +35,14 @@
 .NOTES
     Requires: ActiveDirectory module, ADSync module
     Run as: Domain Admin on DC01 (192.168.1.10)
+
+    Lab-only values used in this script:
+      - $TenantDomain = "ridgelinets.onmicrosoft.com"  (RTS lab M365 tenant)
+      - OU paths under "OU=RTS Users,DC=ridgeline,DC=local"  (RTS lab AD)
+      - Security group names: All Staff, Operations Users, Finance Users, IT Staff
+
+    For production use, parameterize $TenantDomain, OU paths, and group
+    names; do not assume the RTS-lab values.
 #>
 
 #Requires -Modules ActiveDirectory, ADSync
@@ -47,8 +57,18 @@ param (
     [Parameter(Mandatory)] [string]$JobTitle,
 
     [Parameter()]
-    [SecureString]$DefaultPassword = (ConvertTo-SecureString "Welcome1!2" -AsPlainText -Force)
+    [SecureString]$DefaultPassword
 )
+
+# If no password supplied, generate a cryptographically random 14-char temp password.
+# Caller may also pass -DefaultPassword <SecureString> to set a specific value.
+if (-not $DefaultPassword) {
+    Add-Type -AssemblyName 'System.Web'
+    $generated = [System.Web.Security.Membership]::GeneratePassword(14, 4)
+    $DefaultPassword = ConvertTo-SecureString $generated -AsPlainText -Force
+    Write-Host "Generated temporary password: $generated" -ForegroundColor Yellow
+    Write-Host "Communicate to user via secure channel. User must change at first logon." -ForegroundColor Yellow
+}
 
 $TenantDomain    = "ridgelinets.onmicrosoft.com"
 

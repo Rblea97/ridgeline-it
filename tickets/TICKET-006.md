@@ -5,7 +5,8 @@
 **Reported by:** Operations Team
 **Assigned to:** Richard Blea (Lab Admin)
 **Status:** Closed — Resolved
-**Priority:** Low
+**Priority:** P4 Low
+**SLA:** Tier 4 — 24 hr response / 72 hr resolution
 **Category:** Software Deployment / Intune
 
 ---

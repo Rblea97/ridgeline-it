@@ -1,6 +1,10 @@
-# Ridgeline IT Support — Ticketing System
+# Ridgeline Technology Services — Ticketing System
 
 This directory contains a fully configured osTicket instance that mirrors the incident management workflow used in the Ridgeline home lab.
+
+## How This Fits Into The Lab
+
+This ticketing system is the operations-side counterpart to the rest of the lab. The 8 support incidents documented in [`../tickets/`](../tickets/) were intaken, triaged, and worked through this osTicket instance. The root [README](../README.md#the-service-desk) summarizes the service desk; this directory is the configuration and infrastructure detail.
 
 ## What's Here
 
@@ -27,6 +31,30 @@ docker compose up -d
 ```
 
 First-time setup: if you see a setup wizard, complete it using the credentials from your `.env` file.
+
+## Configuration Automation
+
+The osTicket instance was configured programmatically by [`setup_osticket.py`](setup_osticket.py) — a Python script that logs in via the staff panel, handles CSRF tokens, and creates departments, SLAs, help topics, custom fields, and all 8 sample tickets. The screenshots in `screenshots/` were captured against the state this script produces.
+
+To rebuild the instance from scratch:
+
+```bash
+# 1. Bring up the containers
+cp .env.example .env  # then fill in real values
+docker compose up -d
+
+# 2. Install Python dependencies
+python -m venv venv
+source venv/bin/activate  # or `venv\Scripts\activate` on Windows
+pip install -r requirements.txt
+
+# 3. Set credentials and run the script
+export OSTICKET_ADMIN_EMAIL="$ADMIN_EMAIL"
+export OSTICKET_ADMIN_PASSWORD="$ADMIN_PASS"
+python setup_osticket.py
+```
+
+The script is idempotent on re-run for departments and SLAs (skips existing) but ticket creation will produce duplicates if run twice.
 
 ## What's Configured
 
@@ -58,3 +86,9 @@ All 8 incidents from the home lab are entered with full ITSM classification:
 | 008 | Finance$ Share Access Denied | P3 Medium | Tier 3 |
 
 See `docs/03-priority-matrix.md` for how priorities were assigned.
+
+## Sample Tickets Worked Through This System
+
+All 8 ticket files: [`../tickets/`](../tickets/) (or see the [tickets index](../tickets/README.md) for a quick-reference table).
+
+Three featured walkthroughs in the root README: account lockout, new employee onboarding, file share access denied. These are the most pedagogically rich examples of priority matrix application, account management, and Windows access control depth.

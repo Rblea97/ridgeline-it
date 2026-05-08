@@ -83,7 +83,7 @@ Next step: Assign M365 E5 license in admin.microsoft.com
 1. Open a new email or Teams message addressed to the new hire's personal email address (not their new work account).
 2. Include the following information:
    - **Username:** `flastname@<TENANT>.onmicrosoft.com`
-   - **Temporary password:** `Welcome1!`
+   - **Temporary password:** [generated temp password — communicated to user via secure channel]
    - **Instructions:** Sign in at [portal.office.com](https://portal.office.com). You will be prompted to set a new password on first login.
 3. Send the message and note the date/time you sent it.
 
