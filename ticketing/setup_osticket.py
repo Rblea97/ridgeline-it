@@ -336,8 +336,8 @@ create_ticket(
     dept_id=it_support_id, sla_id=tier3_id, priority_id=2, topic_id=onboarding_id,
     issue_summary="Provisioned AD account, group memberships, and M365 license for new Financial Analyst Jamie Chen. Script defect: default temp password did not meet domain policy minimum length.",
     environment="New user: jchen (Jamie Chen) | OU: Finance,RTS Users | Domain: ridgeline.local | M365 tenant: ridgelinets.onmicrosoft.com",
-    root_cause="Not an incident — provisioning request. Script defect: default temp password Welcome1! (9 chars) failed domain policy minimum of 10 chars, leaving account disabled on first run.",
-    resolution_steps="1. Ran Invoke-RTSOnboarding.ps1 with corrected password Welcome1!2. 2. Verified account with Get-ADUser jchen. 3. Assigned M365 E5 license. 4. Triggered delta sync — jchen visible in Azure AD.",
+    root_cause="Not an incident — provisioning request. Script defect: default temp password (9 chars) failed domain policy minimum of 10 chars, leaving account disabled on first run.",
+    resolution_steps="1. Ran Invoke-RTSOnboarding.ps1 with corrected temporary password. 2. Verified account with Get-ADUser jchen. 3. Assigned M365 E5 license. 4. Triggered delta sync — jchen visible in Azure AD.",
     lessons_learned="Validate script default passwords against Get-ADDefaultDomainPasswordPolicy before deployment. Confirm Azure AD Connect sync completes before attempting M365 license assignment.",
 )
 
