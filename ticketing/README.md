@@ -32,6 +32,30 @@ docker compose up -d
 
 First-time setup: if you see a setup wizard, complete it using the credentials from your `.env` file.
 
+## Configuration Automation
+
+The osTicket instance was configured programmatically by [`setup_osticket.py`](setup_osticket.py) — a Python script that logs in via the staff panel, handles CSRF tokens, and creates departments, SLAs, help topics, custom fields, and all 8 sample tickets. The screenshots in `screenshots/` were captured against the state this script produces.
+
+To rebuild the instance from scratch:
+
+```bash
+# 1. Bring up the containers
+cp .env.example .env  # then fill in real values
+docker compose up -d
+
+# 2. Install Python dependencies
+python -m venv venv
+source venv/bin/activate  # or `venv\Scripts\activate` on Windows
+pip install -r requirements.txt
+
+# 3. Set credentials and run the script
+export OSTICKET_ADMIN_EMAIL="$ADMIN_EMAIL"
+export OSTICKET_ADMIN_PASSWORD="$ADMIN_PASS"
+python setup_osticket.py
+```
+
+The script is idempotent on re-run for departments and SLAs (skips existing) but ticket creation will produce duplicates if run twice.
+
 ## What's Configured
 
 ### Departments
