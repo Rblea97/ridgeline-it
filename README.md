@@ -5,7 +5,7 @@ A hands-on IT environment simulating the infrastructure of a 20-person company �
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-Richard_Blea-0077B5?logo=linkedin&logoColor=white)](https://www.linkedin.com/in/richard-blea-748914159)
 [![GitHub](https://img.shields.io/badge/GitHub-Rblea97-181717?logo=github&logoColor=white)](https://github.com/Rblea97)
 
-*B.S. Computer Science · Cybersecurity & Defense Certificate — University of Colorado Denver*
+*B.A. Computer Science · Cybersecurity & Defense Certificate — University of Colorado Denver*
 
 ![Windows Server 2022](https://img.shields.io/badge/Windows_Server-2022-0078D4?logo=windows&logoColor=white)
 ![Microsoft Intune](https://img.shields.io/badge/Microsoft_Intune-0078D4?logo=microsoft&logoColor=white)
